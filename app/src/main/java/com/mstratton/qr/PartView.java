@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,10 +17,6 @@ import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
  
 public class PartView extends Activity {
-    // For Menu
-    private boolean mAttachedToWindow;
-    private boolean mOptionsMenuOpen;
-
     int cardIndex;
     String partID;
     private ArrayList<View> cardList;
@@ -92,8 +85,13 @@ public class PartView extends Activity {
             {
                 //save the card index that was selected
                 cardIndex = position;
-                //open the menu
-                openOptionsMenu();
+
+                if (position == 2) {
+                    // new cardscrollview
+                    openChecklist();
+                }
+
+                Toast.makeText(getApplicationContext(), "Clicked on " + headInfo.get(position) + " Card", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -128,55 +126,42 @@ public class PartView extends Activity {
         }
     }
 
-    // Options Menu Code ---------------------------------------------------------------------------
+    public void openChecklist () {
+        ArrayList<View> stepList;
+        final ArrayList<String> checklistInfo =  new ArrayList<String>(Arrays.asList("Step 1", "Step 2", "Step 3", "Step 4", "Step 5"));
+        // Create cards using information.
+        // Cycle through the head and sub info arrays, each cell is a type of info.
+        // 0 = Picture, 1 = Video, 2 = Specs, 3 = Specs, 4 = Specs
+        stepList = new ArrayList<View>();
+        for (int i = 0; i < checklistInfo.size(); i++) {
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mAttachedToWindow = true;
-        // This will open menu on launch
-        //openOptionsMenu();
-    }
+            View tempView = new CardBuilder(this, CardBuilder.Layout.TEXT_FIXED)
+                    .setText(checklistInfo.get(i))
+                    .addImage(R.drawable.screw)
+                    .addImage(R.drawable.screw2)
+                    .addImage(R.drawable.screwcollection)
+                    .getView();
+            stepList.add(tempView);
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mAttachedToWindow = false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.partviewmenu, menu);
-        return true;
-    }
-
-    @Override
-    public void openOptionsMenu() {
-        if (!mOptionsMenuOpen && mAttachedToWindow) {
-            super.openOptionsMenu();
         }
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.pin_card:
-                Toast.makeText(getApplicationContext(), "Not Implemented.", Toast.LENGTH_SHORT).show();
+        CardScrollView csvCardsView2 = new CardScrollView(this);
+        csaAdapter cvAdapter2 = new csaAdapter();
+        csvCardsView2.setAdapter(cvAdapter2);
+        csvCardsView2.activate();
+        csvCardsView2.setOnItemClickListener(new OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                //save the card index that was selected
+                cardIndex = position;
 
-                return true;
-            case R.id.exit:
-                finish();
+                Toast.makeText(getApplicationContext(), "Clicked on " + checklistInfo.get(position) + " Card", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        mOptionsMenuOpen = false;
+        setContentView(csvCardsView2);
     }
 
 }
