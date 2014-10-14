@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Required by App -->
+    <string name="app_name">Part Assistant</string>
+    <string name="start_command">Part Assistant</string>
+
+    <string name="viewfinder_label">Scan a Part</string>
+    <string name="parthistory_label">Recent Parts</string>
+    <string name="partview_label">Open Part View</string>
+
+    <!-- App Resources -->
+    <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>
+
+    <!-- Touch Menu Items -->
+	<string name="info">Show Part Info</string>
+    <string name="pin_card">Pin This Card</string>
+	<string name="exit">Exit</string> 
+</resources>
