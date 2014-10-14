@@ -89,6 +89,8 @@ public class PartView extends Activity {
                 if (position == 2) {
                     // new cardscrollview
                     openChecklist();
+
+                    // weeeeeeeeee
                 }
 
                 Toast.makeText(getApplicationContext(), "Clicked on " + headInfo.get(position) + " Card", Toast.LENGTH_SHORT).show();
