@@ -1,4 +1,4 @@
-package com.mstratton.qr;
+package com.mstratton.jplapp;
 
 import java.io.IOException;
 import java.util.List;

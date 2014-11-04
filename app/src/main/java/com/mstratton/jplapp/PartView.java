@@ -1,4 +1,4 @@
-package com.mstratton.qr;
+package com.mstratton.jplapp;
 
 import java.util.ArrayList;
 import java.util.Arrays;

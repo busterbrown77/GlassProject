@@ -1,4 +1,4 @@
-package com.mstratton.qr;
+package com.mstratton.jplapp;
 
 import android.app.Activity;
 import android.content.Context;

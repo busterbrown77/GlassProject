@@ -1,4 +1,4 @@
-package com.mstratton.qr;
+package com.mstratton.jplapp;
 
 import android.content.Intent;
 import android.os.IBinder;

@@ -10,9 +10,8 @@ repositories {
 android {
     compileSdkVersion "Google Inc.:Glass Development Kit Preview:19"
     buildToolsVersion "20.0.0"
-
     defaultConfig {
-        applicationId "glassqr.mstratton.com.glassqr"
+        applicationId 'com.mstratton.jplapp'
         minSdkVersion 19
         targetSdkVersion 20
         versionCode 1
@@ -23,6 +22,8 @@ android {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
