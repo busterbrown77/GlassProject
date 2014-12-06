@@ -8,6 +8,7 @@
     <string name="viewfinder_label">Scan a Part</string>
     <string name="parthistory_label">Recent Parts</string>
     <string name="partview_label">Open Part View</string>
+    <string name="checklistview_label">Open CheckList View</string>
 
     <!-- App Resources -->
     <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>

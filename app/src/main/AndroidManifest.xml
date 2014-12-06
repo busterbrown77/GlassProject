@@ -56,6 +56,12 @@
             android:label="@string/partview_label" >
         </activity>
 
+        <activity
+            android:name=".CheckListView"
+            android:enabled="true"
+            android:label="@string/checklistview_label" >
+        </activity>
+
         <service
             android:name=".Service"
             android:enabled="true"

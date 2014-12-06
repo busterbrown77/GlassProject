@@ -27,25 +27,53 @@ public class PartHistory extends Activity {
 
         // Fill Array with saved part IDs from past scans...
         // Stuff..
-        headInfo =  new ArrayList<String>(Arrays.asList("Part_001", "Part_002", "Part_003"));
+        headInfo =  new ArrayList<String>(Arrays.asList("Intake Filter", "Oil Filter", "Spark Plug"));
 
         // Create cards using information.
         // Cycle through the head and sub info arrays, each cell is a type of info.
         // 0 = Picture, 1 = Video, 2 = Specs, 3 = Specs, 4 = Specs
         cardList = new ArrayList<View>();
-        for (int i = 0; i < headInfo.size(); i++) {
+//        for (int i = 0; i < headInfo.size(); i++) {
+//
+//            View tempView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+//                    .setText(headInfo.get(i))
+//                    .setFootnote("Recently Scanned")
+//                    .setTimestamp("Today")
+//
+//                    //.addImage(R.drawable.screw2)
+//                    //.addImage(R.drawable.screwcollection)
+//                    .getView();
+//            cardList.add(tempView);
+//
+//        }
 
-            View tempView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                    .setText(headInfo.get(i))
-                    .setFootnote("Recently Scanned")
-                    .setTimestamp("Today")
+        View tempView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                .setText(headInfo.get(0))
+                .setFootnote("Scanned by Peter")
+                .setTimestamp("Today")
 
-                    //.addImage(R.drawable.screw2)
-                    //.addImage(R.drawable.screwcollection)
-                    .getView();
-            cardList.add(tempView);
+                .addImage(R.drawable.intake)
+                .getView();
+        cardList.add(tempView);
 
-        }
+        View intakeView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                .setText(headInfo.get(1))
+                .setFootnote("Scanned by Peter")
+                .setTimestamp("Today")
+
+                .addImage(R.drawable.oil_filter)
+                .getView();
+        cardList.add(intakeView);
+
+        View sparkView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                .setText(headInfo.get(2))
+                .setFootnote("Scanned by Mike")
+                .setTimestamp("Today")
+
+                .addImage(R.drawable.spark)
+                .getView();
+        cardList.add(sparkView);
+
 
         CardScrollView csvCardsView = new CardScrollView(this);
         csaAdapter cvAdapter = new csaAdapter();
