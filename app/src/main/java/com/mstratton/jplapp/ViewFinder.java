@@ -3,38 +3,32 @@ package com.mstratton.jplapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.PreviewCallback;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
-import android.view.MotionEvent;
 
-import android.view.Menu;
-import android.view.MenuItem;
-
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ImageView;
-
-import android.os.Handler;
-
-
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-
-import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
-import android.hardware.Camera.AutoFocusCallback;
-import android.hardware.Camera.Size;
-
-
-/* Import ZBar Class files */
-import net.sourceforge.zbar.ImageScanner;
+import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
+import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
-import net.sourceforge.zbar.Config;
+
+/* Import ZBar Class files */
 
 public class ViewFinder extends Activity {
     private static final String kTag = ViewFinder.class.getSimpleName();
@@ -50,7 +44,7 @@ public class ViewFinder extends Activity {
     String partID;
 
     private Camera mCamera;
-    private CameraPreview mPreview;
+    private CameraLib mPreview;
     private Handler autoFocusHandler;
     ImageScanner scanner;
     private boolean previewing = true;
@@ -92,7 +86,7 @@ public class ViewFinder extends Activity {
         scanner.setConfig(0, Config.X_DENSITY, 3);
         scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-        mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
+        mPreview = new CameraLib(this, mCamera, previewCb, autoFocusCB);
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
@@ -170,7 +164,7 @@ public class ViewFinder extends Activity {
                     // Also sends the part ID to the activity, to look up data.
 
                     // Define Part View Class
-                    Intent myIntent = new Intent(ViewFinder.this, PartView.class);
+                    Intent myIntent = new Intent(ViewFinder.this, PartInfo.class);
                     // Attach the part info from viewfinder.
                     myIntent.putExtra("KEY", partID);
                     // Start the Part View class
@@ -305,7 +299,7 @@ public class ViewFinder extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.viewfindermenu, menu);
+        getMenuInflater().inflate(R.menu.viewfinder, menu);
         return true;
     }
 
@@ -319,7 +313,7 @@ public class ViewFinder extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.exit:
+            case R.id.menu_back:
                 finish();
 
                 return true;

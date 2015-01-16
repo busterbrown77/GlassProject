@@ -5,16 +5,21 @@
     <string name="app_name">Part Assistant</string>
     <string name="start_command">Part Assistant</string>
 
-    <string name="viewfinder_label">Scan a Part</string>
-    <string name="parthistory_label">Recent Parts</string>
-    <string name="partview_label">Open Part View</string>
-    <string name="checklistview_label">Open CheckList View</string>
+    <string name="viewfinder">Scan a Part</string>
+    <string name="recentparts">Open Recent Parts</string>
+    <string name="settings">Open Settings</string>
 
-    <!-- App Resources -->
     <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>
 
-    <!-- Touch Menu Items -->
-	<string name="info">Show Part Info</string>
-    <string name="pin_card">Pin This Card</string>
-	<string name="exit">Exit</string> 
+    <string name="detail">Go to Detail</string>
+    <string name="video">Go to Video</string>
+    <string name="checklist">Go to Checklists</string>
+    <string name="history">Go to History</string>
+    <string name="specs">Go to Specs</string>
+
+    <string name="select">Select</string>
+    <string name="next">Next</string>
+    <string name="prev">Previous</string>
+    <string name="back">Back</string>
+    <string name="exit">Exit</string>
 </resources>

@@ -1,31 +1,27 @@
 package com.mstratton.jplapp;
 
-import java.io.IOException;
-import java.util.List;
-
-import android.util.Log;
-import android.view.SurfaceView;
-import android.view.SurfaceHolder;
-
 import android.content.Context;
-
 import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.PreviewCallback;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
+import java.io.IOException;
 
 /** A basic Camera preview class */
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-    private static final String kTag = CameraPreview.class.getSimpleName();
-
+public class CameraLib extends SurfaceView implements SurfaceHolder.Callback {
+    private static final String kTag = CameraLib.class.getSimpleName();
 
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private PreviewCallback previewCallback;
     private AutoFocusCallback autoFocusCallback;
 
-    public CameraPreview(Context context, Camera camera,
-                         PreviewCallback previewCb,
-                         AutoFocusCallback autoFocusCb) {
+    public CameraLib(Context context, Camera camera,
+                     PreviewCallback previewCb,
+                     AutoFocusCallback autoFocusCb) {
         super(context);
         mCamera = camera;
         previewCallback = previewCb;
@@ -100,4 +96,5 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             Log.d("DBG", "Error starting camera preview: " + e.getMessage());
         }
     }
+
 }

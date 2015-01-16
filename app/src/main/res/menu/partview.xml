@@ -16,11 +16,29 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/pin_card"
-        android:title="@string/pin_card"
-        android:icon="@drawable/ic_glass_logo"/>
+        android:id="@+id/menu_detail"
+        android:title="@string/detail" />
     <item
-        android:id="@+id/exit"
-        android:title="@string/exit"
-        android:icon="@drawable/ic_stop"/>
+        android:id="@+id/menu_video"
+        android:title="@string/video" />
+    <item
+        android:id="@+id/menu_checklist"
+        android:title="@string/checklist" />
+    <item
+        android:id="@+id/menu_history"
+        android:title="@string/history" />
+    <item
+        android:id="@+id/menu_specs"
+        android:title="@string/specs" />
+
+
+    <item
+        android:id="@+id/menu_next"
+        android:title="@string/next" />
+    <item
+        android:id="@+id/menu_prev"
+        android:title="@string/prev" />
+    <item
+        android:id="@+id/menu_back"
+        android:title="@string/back" />
 </menu>

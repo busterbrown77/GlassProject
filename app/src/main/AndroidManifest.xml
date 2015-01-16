@@ -10,6 +10,8 @@
 
     <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -19,47 +21,45 @@
         android:allowBackup="true">
 
         <activity
+            android:name=".SplashScreen"
+            android:enabled="true"
+            android:icon="@drawable/ic_camera"
+            android:label="@string/viewfinder"
+            android:noHistory="true" >
+
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <!-- Voice command found in res/xml/voice_trigger_start -->
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_start" />
+        </activity>
+
+        <activity
+            android:name=".Home"
+            android:enabled="true" >
+        </activity>
+
+        <activity
             android:name=".ViewFinder"
-            android:enabled="true"
-            android:icon="@drawable/ic_camera"
-            android:label="@string/viewfinder_label" >
-
-            <intent-filter>
-                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
-            </intent-filter>
-
-            <!-- Voice command found in res/xml/voice_trigger_start -->
-            <meta-data
-                android:name="com.google.android.glass.VoiceTrigger"
-                android:resource="@xml/voice_trigger_start" />
+            android:enabled="true" >
         </activity>
 
         <activity
-            android:name=".PartHistory"
-            android:enabled="true"
-            android:icon="@drawable/ic_camera"
-            android:label="@string/parthistory_label" >
-
-            <intent-filter>
-                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
-            </intent-filter>
-
-            <!-- Voice command found in res/xml/voice_trigger_start -->
-            <meta-data
-                android:name="com.google.android.glass.VoiceTrigger"
-                android:resource="@xml/voice_trigger_start" />
+            android:name=".RecentParts"
+            android:enabled="true" >
         </activity>
 
         <activity
-            android:name=".PartView"
-            android:enabled="true"
-            android:label="@string/partview_label" >
+            android:name=".PartInfo"
+            android:enabled="true" >
         </activity>
 
         <activity
-            android:name=".CheckListView"
-            android:enabled="true"
-            android:label="@string/checklistview_label" >
+            android:name=".CheckList"
+            android:enabled="true" >
         </activity>
 
         <service

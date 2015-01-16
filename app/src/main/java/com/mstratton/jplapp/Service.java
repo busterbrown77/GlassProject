@@ -17,7 +17,6 @@ public class Service extends android.app.Service {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         return START_STICKY;
-       
     }
     
 }

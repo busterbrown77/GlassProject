@@ -16,7 +16,15 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/exit"
-        android:title="@string/exit"
-        android:icon="@drawable/ic_stop"/>
+        android:id="@+id/menu_select"
+        android:title="@string/select" />
+    <item
+        android:id="@+id/menu_next"
+        android:title="@string/next" />
+    <item
+        android:id="@+id/menu_prev"
+        android:title="@string/prev" />
+    <item
+        android:id="@+id/menu_back"
+        android:title="@string/back" />
 </menu>
