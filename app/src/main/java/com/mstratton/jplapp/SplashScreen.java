@@ -286,6 +286,7 @@ public class SplashScreen extends Activity {
 
                     return true;
                 } else if (gesture == Gesture.TWO_SWIPE_UP) {
+
                     Toast.makeText(getApplicationContext(), "Two Swipe up", Toast.LENGTH_SHORT).show();
 
                     return true;

@@ -3,13 +3,13 @@ package com.mstratton.jplapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -17,6 +17,7 @@ import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Home extends Activity {
     int cardIndex;
@@ -30,7 +31,7 @@ public class Home extends Activity {
 
         // Add menu cards
         View cardSettings = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("Settings")
+                .setText("Voice Search")
                 .getView();
         cardList.add(cardSettings);
 
@@ -57,7 +58,7 @@ public class Home extends Activity {
 
                 if (position == 0) {
                     // settings
-                    Toast.makeText(getApplicationContext(), "Not actually a thing.", Toast.LENGTH_SHORT).show();
+                    displaySpeechRecognizer();
                 } else if (position == 1) {
                     // viewfinder
                     Intent intent = new Intent(Home.this, ViewFinder.class);
@@ -104,6 +105,31 @@ public class Home extends Activity {
         }
     }
 
+    // For Voice Input ----------------------------------------------------------------------
+
+    private static final int SPEECH_REQUEST = 0;
+
+    private void displaySpeechRecognizer() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        startActivityForResult(intent, SPEECH_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SPEECH_REQUEST && resultCode == RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+
+            // Define Part View Class
+            Intent myIntent = new Intent(Home.this, PartInfo.class);
+            // Attach the part info from viewfinder.
+            myIntent.putExtra("KEY", spokenText);
+            // Start the Part View class
+            this.startActivity(myIntent);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     // For Contextual Voice Commands --------------------------------------------------------
 
     @Override
@@ -136,11 +162,9 @@ public class Home extends Activity {
                     Intent rintent = new Intent(Home.this, RecentParts.class);
                     startActivity(rintent);
                     break;
-                case R.id.menu_settings:
+                case R.id.menu_manual:
                     // Open Viewfinder
-                    Toast.makeText(Home.this, "Not actually a thing.", Toast.LENGTH_SHORT).show();
-                    Intent sintent = new Intent(Home.this, Home.class);
-                    startActivity(sintent);
+                    displaySpeechRecognizer();
                     break;
                 case R.id.menu_exit:
                     finish();

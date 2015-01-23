@@ -7,7 +7,7 @@
 
     <string name="viewfinder">Scan a Part</string>
     <string name="recentparts">Open Recent Parts</string>
-    <string name="settings">Open Settings</string>
+    <string name="manual">Voice Search</string>
 
     <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>
 

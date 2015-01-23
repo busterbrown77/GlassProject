@@ -19,11 +19,11 @@
         android:id="@+id/menu_viewfinder"
         android:title="@string/viewfinder" />
     <item
+        android:id="@+id/menu_manual"
+        android:title="@string/manual" />
+    <item
         android:id="@+id/menu_recentparts"
         android:title="@string/recentparts" />
-    <item
-        android:id="@+id/menu_settings"
-        android:title="@string/settings" />
     <item
         android:id="@+id/menu_exit"
         android:title="@string/exit" />
