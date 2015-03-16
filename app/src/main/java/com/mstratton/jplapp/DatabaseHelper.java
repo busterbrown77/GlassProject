@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String TABLE_SPECIAL = "specialPart";
     private static final String TABLE_PICTURE = "picturePart";
     private static final String TABLE_VIDEO = "videoPart";
+    private static final String TABLE_SCANNED = "scannedPart";
 
     private static final String COLUMN_PART_ID = "part_id";
     private static final String COLUMN_PICTURES = "picture_location";
@@ -28,6 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_INTEGRATION_STATUS = "integration_status";
     private static final String COLUMN_SPECIAL_ITEMS = "special_items";
 
+
+
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
     }
@@ -35,14 +38,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table partDB("
-                + " _id INTEGER PRIMARY KEY,"
-                + " integration_status INTEGER,"
-                + " location DOUBLE)");
+                + " _id TEXT PRIMARY KEY,"
+                + " partName TEXT,"
+                + " partDescription TEXT),"
+                + " partSpecs TEXT");
         db.execSQL("create table checklistPart ("
-                + " _id INTEGER, "
-                + " task TEXT,"
-                + " FOREIGN KEY(_id) REFERENCES _id(partDB))" );
-        // db.execSQL("create table ")
+                + " _id TEXT,"
+                + " process TEXT,"
+                + " FOREIGN KEY(_id) REFERENCES _id(partDB))");
+        db.execSQL("create table scannedPart("
+                + " _id TEXT,"
+                + " scanTime DATETIME,"
+                + " locationLat DOUBLE,"
+                + " locationLong DOUBLE,"
+                + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
+        db.execSQL("create table picturePart ("
+                + " _id TEXT,"
+                + " picPaths TEXT,"
+                + " FOREIGN KEY(_id) REFERENCES _id(partDB))");
+        db.execSQL("create table videoPart ("
+                + " _id TEXT,"
+                + " vidPaths TEXT,"
+                + " FOREIGN KEY(_id) REFERENCES _id(partDB))");
     }
 
     @Override
