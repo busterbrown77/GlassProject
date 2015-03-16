@@ -2,9 +2,7 @@ package com.mstratton.jplapp;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
-/**
- * Created by Sam on 2/4/2015.
- */
+
 public abstract class DataLoader<T> extends AsyncTaskLoader<T>{
 
     private T mData;

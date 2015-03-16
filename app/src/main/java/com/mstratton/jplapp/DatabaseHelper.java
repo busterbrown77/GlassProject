@@ -81,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     public PartCursor queryPart(String part_id){
         Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, COLUMN_PART_ID +" = ?",
-                new String[]{String.valueOf(part_id)}, null, null, null, "1");
+                new String[]{part_id}, null, null, null, "1");
         return new PartCursor(wrapped);
     }
 

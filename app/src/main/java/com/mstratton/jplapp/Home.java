@@ -110,6 +110,7 @@ public class Home extends Activity {
 
     private void displaySpeechRecognizer() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak a part number");
         startActivityForResult(intent, SPEECH_REQUEST);
     }
 
@@ -119,12 +120,20 @@ public class Home extends Activity {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
 
-
+            // Filter spoken text
+            String filteredText = "";
+            for (int i = 0; i < spokenText.length(); i++) {
+                char current = spokenText.charAt(i);
+                if (current != ' ') {
+                    filteredText += current;
+                }
+                filteredText.toUpperCase();
+            }
 
             // Define Part View Class
             Intent myIntent = new Intent(Home.this, PartInfo.class);
             // Attach the part info from viewfinder.
-            myIntent.putExtra("KEY", spokenText);
+            myIntent.putExtra("KEY", filteredText);
             // Start the Part View class
             this.startActivity(myIntent);
         }
