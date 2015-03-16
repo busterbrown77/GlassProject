@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String TABLE_VIDEO = "videoPart";
     private static final String TABLE_SCANNED = "scannedPart";
 
-    private static final String COLUMN_PART_ID = "part_id";
+    private static final String COLUMN_PART_ID = "_id";
     private static final String COLUMN_PICTURES = "picture_location";
     private static final String COLUMN_VIDEOS = "videos_location";
     private static final String COLUMN_CHECKLIST_TASK = "checklist_task";
@@ -96,7 +96,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             }
             Part part = new Part();
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
-            part.setIntegrationStatus(getString(getColumnIndex(COLUMN_INTEGRATION_STATUS)));
             return part;
 
         }
