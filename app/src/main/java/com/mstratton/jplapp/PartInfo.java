@@ -40,7 +40,7 @@ public class PartInfo extends Activity {
         // Stuff
 
         // Fill Array with information about part.
-        headInfo =  new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Tutorials", "Logged History", "Specifications"));
+        headInfo =  new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Checklists", "Logged History", "Specifications"));
         subInfo = new ArrayList<String>(Arrays.asList("Detected a " + partID + " part. \n \n ",
                                                       "Video will be Here, can be pinned to main screen.",
                                                       "Checklists and Tutorials for Installation / Disassembly will be here, can be pinned to main screen.",
@@ -189,6 +189,10 @@ public class PartInfo extends Activity {
                 case R.id.menu_checklist:
                     csvCardsView.setSelection(4);
 
+                    // Must start Checklists class automatically, since no way
+                    // to "select" a card using voice.
+                    openChecklistView();
+
                     break;
                 case R.id.menu_history:
                     csvCardsView.setSelection(5);
@@ -196,15 +200,6 @@ public class PartInfo extends Activity {
                     break;
                 case R.id.menu_specs:
                     csvCardsView.setSelection(6);
-
-                    break;
-
-                case R.id.menu_next:
-                    csvCardsView.setSelection(csvCardsView.getSelectedItemPosition() + 1);
-
-                    break;
-                case R.id.menu_prev:
-                    csvCardsView.setSelection(csvCardsView.getSelectedItemPosition() - 1);
 
                     break;
                 case R.id.menu_back:

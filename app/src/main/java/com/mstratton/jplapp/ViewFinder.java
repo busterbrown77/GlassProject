@@ -10,8 +10,6 @@ import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -279,53 +277,5 @@ public class ViewFinder extends Activity {
 //        }
 //        return false;
 //    }
-
-
-    // Options Menu Code --------------------------------------------------------------------------- 
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mAttachedToWindow = true;
-        // This will open menu on launch
-        //openOptionsMenu();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mAttachedToWindow = false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.viewfinder, menu);
-        return true;
-    }
-
-    @Override
-    public void openOptionsMenu() {
-        if (!mOptionsMenuOpen && mAttachedToWindow) {
-            super.openOptionsMenu();
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_back:
-                finish();
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        mOptionsMenuOpen = false;
-    }
 
 }

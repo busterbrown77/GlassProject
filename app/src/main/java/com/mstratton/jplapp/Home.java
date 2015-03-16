@@ -3,7 +3,6 @@ package com.mstratton.jplapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.content.Context;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -24,19 +22,11 @@ import java.util.List;
 public class Home extends Activity {
     int cardIndex;
     private ArrayList<View> cardList;
-    private Context mContext;
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         cardList = new ArrayList<View>();
-        //DB TEST CODE
-
-        DatabaseHelper mDatabaseHelper = new DatabaseHelper(mContext);
 
         // Add menu cards
         View cardSettings = new CardBuilder(this, CardBuilder.Layout.MENU)
@@ -128,6 +118,8 @@ public class Home extends Activity {
         if (requestCode == SPEECH_REQUEST && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
+
+
 
             // Define Part View Class
             Intent myIntent = new Intent(Home.this, PartInfo.class);

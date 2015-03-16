@@ -3,16 +3,14 @@ package com.mstratton.jplapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.google.android.glass.touchpad.Gesture;
-import com.google.android.glass.touchpad.GestureDetector;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
@@ -28,72 +26,40 @@ public class SplashScreen extends Activity {
     // For Loading Screen
     private Slider.Indeterminate mIndeterminate;
     private Slider mSlider;
-    private ArrayList<View> cardList;
+    private Context mContext;
+    private ArrayList<View> cardList;    
     CardScrollView csvCardsView;
-    private GestureDetector mGestureDetector;
 
     // For Startup Checks
-    String filename = "testdata";
     final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         cardList = new ArrayList<View>();
 
-        // Create the cards for the view
-        createCards();
+        // Create the Loading Card
+        View cardLoad = new CardBuilder(this, CardBuilder.Layout.MENU)
+                .setText("Loading...")
+                .getView();
+        cardList.add(cardLoad);
 
+        // Create the CardScrollView
         csvCardsView = new CardScrollView(this);
         csaAdapter cvAdapter = new csaAdapter();
         csvCardsView.setAdapter(cvAdapter);
         csvCardsView.activate();
-        csvCardsView.getKeepScreenOn();
 
-        // Set the view for the Slider
+        // Set the View and Mode for the Slider
         mSlider = Slider.from(csvCardsView);
         mIndeterminate = mSlider.startIndeterminate();
 
         // Show Card View
         setContentView(csvCardsView);
 
-        /* Start Gesture Detector */
-        mGestureDetector = createGestureDetector(this);
-
-        // Animate the Loading Screen
-        handler.postDelayed(informStorage, 600);
-        handler.postDelayed(runStorage, 750);
-        handler.postDelayed(informData, 900);
-        handler.postDelayed(runData, 4500);
-    }
-
-    //For Loading Screen ---------------------------------------------------------------------
-
-    private void createCards() {
-        View cardLoad = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("Loading...")
-                .getView();
-        cardList.add(cardLoad);
-
-        View cardStorage = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("Checking Storage...")
-                .getView();
-        cardList.add(cardStorage);
-
-        View cardData = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("Checking App Data...")
-                .getView();
-        cardList.add(cardData);
-
-        View cardData2 = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("Installing App Data...")
-                .getView();
-        cardList.add(cardData2);
-
-        View cardDone = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("Done!")
-                .getView();
-        cardList.add(cardDone);
+        // Run Data Checks
+        handler.postDelayed(runData, 600);
     }
 
     private class csaAdapter extends CardScrollAdapter {
@@ -120,39 +86,47 @@ public class SplashScreen extends Activity {
 
     //For Startup Checks ---------------------------------------------------------------------
 
-    public boolean checkStorage() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
     public boolean checkData() {
-        File file = getBaseContext().getFileStreamPath(filename);
+        // Get root appdata dir
+        File appDir = getApplicationContext().getFilesDir();
+        // Attempt to find info file in appdata dir
+        File file = new File(appDir, "info.txt");
 
         if (file.exists()) {
             // File Exists, start next activity now
-            handler.postDelayed(informDone, 6700);
+            handler.postDelayed(runDone,800);
+
             return true;
         } else {
             // File does not exist, must create it
-            // Start next activity in a 10 seconds
-            handler.postDelayed(informDone, 12000);
+            // Start next activity in a few seconds (ensure files / db below are created)
+            handler.postDelayed(runDone, 1100);
 
-            // User Message
-            csvCardsView.setSelection(3);
-            mIndeterminate = mSlider.startIndeterminate();
+            // Debug Msg
+            Toast.makeText(SplashScreen.this, "Creating Initial App Data", Toast.LENGTH_SHORT).show();
 
             // Create Directories and Data
-            File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File(sdCard.getAbsolutePath() + "/TestData/");
-            dir.mkdirs();
-            File newfile = new File(dir, filename);
+            File photoDir = new File(appDir, "photos");
+            if( !photoDir.exists() )
+                photoDir.mkdir();
 
-            String data = "";
+            // Test Photo File
+            //File outFile = new File(photoDir, "photo.jpg");
+
+            File videoDir = new File(appDir, "videos");
+            if( !videoDir.exists() )
+                videoDir.mkdir();
+
+            // Test Video File
+            //File outFile2 = new File(videoDir, "video.mp4");
+
+            // Write App Info File
+            File outFile3 = new File(appDir, "info.txt");
+
+            // Info File Data
+            String data = "TestLEL";
             try {
-                FileOutputStream os = new FileOutputStream(newfile);
+                FileOutputStream os = new FileOutputStream(outFile3);
                 os.write(data.getBytes());
                 os.close();
 
@@ -160,39 +134,12 @@ public class SplashScreen extends Activity {
                 return false;
             }
 
+            //Database Creation
+            SQLiteDatabase mDatabaseHelper = new DatabaseHelper(this).getWritableDatabase();
+
             return true;
         }
     }
-
-    Runnable informStorage = new Runnable() {
-        @Override
-        public void run() {
-            csvCardsView.setSelection(1);
-            mIndeterminate = mSlider.startIndeterminate();
-        }
-    };
-
-    Runnable runStorage = new Runnable() {
-        @Override
-        public void run() {
-            // Storage Check
-            if (checkStorage()) {
-
-            } else {
-                // Storage Check Fail
-                Toast.makeText(SplashScreen.this, "Storage Check Failed!", Toast.LENGTH_SHORT).show();
-                System.exit(0);
-            }
-        }
-    };
-
-    Runnable informData = new Runnable() {
-        @Override
-        public void run() {
-            csvCardsView.setSelection(2);
-            mIndeterminate = mSlider.startIndeterminate();
-        }
-    };
 
     Runnable runData = new Runnable() {
         @Override
@@ -208,106 +155,15 @@ public class SplashScreen extends Activity {
         }
     };
 
-    Runnable informDone = new Runnable() {
+    Runnable runDone = new Runnable() {
         @Override
         public void run() {
-            csvCardsView.setSelection(4);
-            mIndeterminate = mSlider.startIndeterminate();
-
             // Loaded, Start Application
             Intent intent = new Intent(SplashScreen.this, Home.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     };
-
-    //For Navigation -------------------------------------------------------------------------
-
-    private GestureDetector createGestureDetector(Context context) {
-        GestureDetector gestureDetector = new GestureDetector(context);
-
-        //Create a base listener for generic gestures
-        gestureDetector.setBaseListener(new GestureDetector.BaseListener() {
-            @Override
-            public boolean onGesture(Gesture gesture) {
-                if (gesture == Gesture.TAP) {
-                    openOptionsMenu();
-                    //Toast.makeText(getApplicationContext(), "Tap", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_TAP) {
-                    Toast.makeText(getApplicationContext(), "Two Tap", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.SWIPE_RIGHT) {
-                    Toast.makeText(getApplicationContext(), "Swipe Right", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.SWIPE_LEFT) {
-                    Toast.makeText(getApplicationContext(), "Swipe Left", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.LONG_PRESS) {
-                    Toast.makeText(getApplicationContext(), "Long Press", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.SWIPE_DOWN) {
-                    Toast.makeText(getApplicationContext(), "Swipe Down", Toast.LENGTH_SHORT).show();
-                    // Appears to be intercepted by CameraPreview. Nothing here works.
-
-                    return false;
-                } else if (gesture == Gesture.SWIPE_UP) {
-                    Toast.makeText(getApplicationContext(), "Swipe up", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.THREE_LONG_PRESS) {
-                    Toast.makeText(getApplicationContext(), "Three Long Press", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.THREE_TAP) {
-                    Toast.makeText(getApplicationContext(), "Three Tap", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_LONG_PRESS) {
-                    Toast.makeText(getApplicationContext(), "Two Long Press", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_SWIPE_DOWN) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe Down", Toast.LENGTH_SHORT).show();
-                    // Appears to be intercepted by CameraPreview. Nothing here works.
-
-                    return false;
-                } else if (gesture == Gesture.TWO_SWIPE_LEFT) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe Left", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_SWIPE_RIGHT) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe Right", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_SWIPE_UP) {
-
-                    Toast.makeText(getApplicationContext(), "Two Swipe up", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                }
-
-                return false;
-            }
-        });
-        return gestureDetector;
-    }
-
-    /*
-     * Send generic motion events to the gesture detector
-     */
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        if (mGestureDetector != null) {
-            return mGestureDetector.onMotionEvent(event);
-        }
-        return false;
-    }
 
 }
 

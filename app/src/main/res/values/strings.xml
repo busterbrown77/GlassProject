@@ -11,15 +11,16 @@
 
     <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>
 
-    <string name="detail">Go to Detail</string>
-    <string name="video">Go to Video</string>
-    <string name="checklist">Go to Checklists</string>
-    <string name="history">Go to History</string>
-    <string name="specs">Go to Specs</string>
+    <string name="detail">Detail</string>
+    <string name="video">Video</string>
+    <string name="checklist">Checklists</string>
+    <string name="history">History</string>
+    <string name="specs">Specs</string>
 
     <string name="select">Select</string>
     <string name="next">Next</string>
     <string name="prev">Previous</string>
     <string name="back">Back</string>
     <string name="exit">Exit</string>
+
 </resources>

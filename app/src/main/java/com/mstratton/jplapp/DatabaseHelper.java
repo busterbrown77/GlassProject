@@ -13,8 +13,6 @@ import android.database.CursorWrapper;
 public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String DB_NAME = "JPL_DATABASE.sqlite";
     private static int VERSION = 1;
-
-
     // References for all the tables rows and columns ----------------------------------------------
 
     private static final String TABLE_PART = "partDB";
@@ -30,10 +28,26 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_INTEGRATION_STATUS = "integration_status";
     private static final String COLUMN_SPECIAL_ITEMS = "special_items";
 
-
-
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table partDB("
+                + " _id INTEGER PRIMARY KEY,"
+                + " integration_status INTEGER,"
+                + " location DOUBLE)");
+        db.execSQL("create table checklistPart ("
+                + " _id INTEGER, "
+                + " task TEXT,"
+                + " FOREIGN KEY(_id) REFERENCES _id(partDB))" );
+        // db.execSQL("create table ")
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
     }
 
     public long insertPart(Part part){
@@ -42,7 +56,17 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return getWritableDatabase().insert(TABLE_PART, null, cv);
     }
 
+    public PartCursor queryParts(){
+        Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, null,
+                null, null, null, COLUMN_PART_ID + " asc");
+        return new PartCursor(wrapped);
+    }
 
+    public PartCursor queryPart(int part_id){
+        Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, COLUMN_PART_ID +" = ?",
+                new String[]{String.valueOf(part_id)}, null, null, null, "1");
+        return new PartCursor(wrapped);
+    }
 
     public static class PartCursor extends CursorWrapper{
         public PartCursor(Cursor c){
@@ -60,33 +84,5 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         }
     }
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table partDB("
-                + " _id INTEGER PRIMARY KEY,"
-                + " integration_status INTEGER,"
-                + " location DOUBLE)");
-        db.execSQL("create table checklistPart ("
-                + " _id INTEGER, "
-                + " task TEXT,"
-                + " FOREIGN KEY(_id) REFERENCES _id(partDB))" );
-       // db.execSQL("create table ")
-    }
 
-    public PartCursor queryParts(){
-        Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, null,
-                null, null, null, COLUMN_PART_ID + " asc");
-        return new PartCursor(wrapped);
-    }
-
-    public PartCursor queryPart(int part_id){
-        Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, COLUMN_PART_ID +" = ?",
-                new String[]{String.valueOf(part_id)}, null, null, null, "1");
-        return new PartCursor(wrapped);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 }
