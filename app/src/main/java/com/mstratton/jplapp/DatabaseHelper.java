@@ -40,9 +40,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("create table partDB("
                 + " _id TEXT PRIMARY KEY,"
                 + " partName TEXT,"
-                + " partDescription TEXT),"
-                + " partSpecs TEXT");
-        db.execSQL("create table checklistPart ("
+                + " partDescription TEXT,"
+                + " partSpecs TEXT)");
+        db.execSQL("create table checklistPart("
                 + " _id TEXT,"
                 + " process TEXT,"
                 + " FOREIGN KEY(_id) REFERENCES _id(partDB))");
@@ -51,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + " scanTime DATETIME,"
                 + " locationLat DOUBLE,"
                 + " locationLong DOUBLE,"
-                + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
+                + " FOREIGN KEY(_id) REFERENCES _id(partDB))");
         db.execSQL("create table picturePart ("
                 + " _id TEXT,"
                 + " picPaths TEXT,"
@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return new PartCursor(wrapped);
     }
 
-    public PartCursor queryPart(int part_id){
+    public PartCursor queryPart(String part_id){
         Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, COLUMN_PART_ID +" = ?",
                 new String[]{String.valueOf(part_id)}, null, null, null, "1");
         return new PartCursor(wrapped);
@@ -95,8 +95,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 return null;
             }
             Part part = new Part();
-            part.setPartID(getInt(getColumnIndex(COLUMN_PART_ID)));
-            part.setIntegrationStatus(getInt(getColumnIndex(COLUMN_INTEGRATION_STATUS)));
+            part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
+            part.setIntegrationStatus(getString(getColumnIndex(COLUMN_INTEGRATION_STATUS)));
             return part;
 
         }
