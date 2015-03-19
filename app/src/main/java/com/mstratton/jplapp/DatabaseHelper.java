@@ -7,9 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-/**
- * Created by Sam on 2/2/2015.
- */
 public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String DB_NAME = "JPL_DATABASE.sqlite";
     private static int VERSION = 1;
@@ -28,8 +25,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_CHECKLIST_TASK = "checklist_task";
     private static final String COLUMN_INTEGRATION_STATUS = "integration_status";
     private static final String COLUMN_SPECIAL_ITEMS = "special_items";
-
-
 
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
@@ -96,6 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             }
             Part part = new Part();
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
+
             return part;
 
         }

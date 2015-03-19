@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -38,15 +37,14 @@ public class PartInfo extends Activity {
             partID = extras.getString("KEY");
         }
 
-        // Get Info from database using the code from QR Scanner.
-        Part part = database.queryPart(partID).getPart();
+        // Get info from Database
+        
 
-        if (database.queryPart(partID) == null) {
-            Toast.makeText(PartInfo.this, "Part Not Found.", Toast.LENGTH_SHORT).show();
-        } else {
-            // Stuff
-        }
-
+//        if (database.queryPart() == null) {
+//            Toast.makeText(PartInfo.this, "Part Not Found.", Toast.LENGTH_SHORT).show();
+//        } else {
+//            // Stuff
+//        }
 
         // Fill Array with information about part.
         headInfo =  new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Checklists", "Logged History", "Specifications"));
