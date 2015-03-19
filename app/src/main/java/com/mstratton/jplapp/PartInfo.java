@@ -2,6 +2,7 @@ package com.mstratton.jplapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +26,10 @@ public class PartInfo extends Activity {
     private ArrayList<String> headInfo;
     private ArrayList<String> subInfo;
     CardScrollView csvCardsView;
-    DatabaseHelper database = new DatabaseHelper(this);
+
+    DatabaseHelper database;
+    Cursor stupid;
+    Part scanned;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +42,15 @@ public class PartInfo extends Activity {
         }
 
         // Get info from Database
-        
+        database = new DatabaseHelper(this);
+        stupid = database.queryPart(partID);
 
-//        if (database.queryPart() == null) {
-//            Toast.makeText(PartInfo.this, "Part Not Found.", Toast.LENGTH_SHORT).show();
-//        } else {
-//            // Stuff
-//        }
+        // Test Part
+        Part scannedPart = new Part("test");//"2110w076");
 
         // Fill Array with information about part.
         headInfo =  new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Checklists", "Logged History", "Specifications"));
-        subInfo = new ArrayList<String>(Arrays.asList("Detected a " + partID + " part. \n \n ",
-                                                      "Video will be Here, can be pinned to main screen.",
-                                                      "Checklists and Tutorials for Installation / Disassembly will be here, can be pinned to main screen.",
-                                                      "Any logged maintenance or issues will sppear here.",
-                                                      "Various Specifications will be here."));
+
 
         // Create cards using information.
         // Cycle through the head and sub info arrays, each cell is a type of info.
@@ -72,26 +70,51 @@ public class PartInfo extends Activity {
                 .getView();
         cardList.add(addphotoCard);
 
-        for (int i = 0; i < headInfo.size(); i++) {
+        View detectCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
+                .setText("Found a " + scannedPart.getPartName() + " (" + stupid.getString(stupid.getColumnIndex("_id")).toString() + ") part.")
+                .setFootnote("Part Found!")
+                 //.addImage(R.drawable.intake)
+                .getView();
+        cardList.add(detectCard);
 
-            // Different layouts for certain info cards
-            if (i < 1) {
-                View tempCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
-                        .setText(subInfo.get(i))
-                        .setFootnote(headInfo.get(i))
-                        //.addImage(R.drawable.intake)
-                        .getView();
-                cardList.add(tempCard);
-            } else {
-                View tempCard = new CardBuilder(this, CardBuilder.Layout.TEXT)
-                        .setText(headInfo.get(i))
-                        .setFootnote(subInfo.get(i))
-                        //.addImage(R.drawable.intake)
-                        .getView();
-                cardList.add(tempCard);
-            }
+        View specificationCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
+                .setText(scannedPart.getPartSpecs())
+                .setFootnote("Part Specifications")
+                 //.addImage(R.drawable.intake)
+                .getView();
+        cardList.add(specificationCard);
 
-        }
+        View checklistsCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
+                .setText("Broken")//scannedPart.getChecklist())
+                .setFootnote("Part Checklists")
+                 //.addImage(R.drawable.intake)
+                .getView();
+        cardList.add(checklistsCard);
+
+        // For loop for photos
+        View photosCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
+                //Image photo = part.getphoto;
+
+                .setText("Photo1") //photo.getName())
+                .setFootnote("Part Photos")
+                 //.addImage(R.drawable.intake)
+                .getView();
+        cardList.add(photosCard);
+
+        // For loop for videos
+        View videosCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
+                .setText("Broken")//scannedPart.getChecklist())
+                .setFootnote("Part Videos")
+                 //.addImage(R.drawable.intake)
+                .getView();
+        cardList.add(videosCard);
+
+        View historyCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
+                .setText("Simply not implemented")
+                .setFootnote("Part History")
+                 //.addImage(R.drawable.intake)
+                .getView();
+        cardList.add(historyCard);
 
         csvCardsView = new CardScrollView(this);
         csaAdapter cvAdapter = new csaAdapter();
