@@ -1,9 +1,5 @@
 package com.mstratton.jplapp;
 
-/**
- * Created by Sam on 2/2/2015.
- */
-
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;

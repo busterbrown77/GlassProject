@@ -110,21 +110,15 @@ public class SplashScreen extends Activity {
             if( !photoDir.exists() )
                 photoDir.mkdir();
 
-            // Test Photo File
-            //File outFile = new File(photoDir, "photo.jpg");
-
             File videoDir = new File(appDir, "videos");
             if( !videoDir.exists() )
                 videoDir.mkdir();
-
-            // Test Video File
-            //File outFile2 = new File(videoDir, "video.mp4");
 
             // Write App Info File
             File outFile3 = new File(appDir, "info.txt");
 
             // Info File Data
-            String data = "TestLEL";
+            String data = "JPLAPP v1.0";
             try {
                 FileOutputStream os = new FileOutputStream(outFile3);
                 os.write(data.getBytes());
@@ -136,6 +130,10 @@ public class SplashScreen extends Activity {
 
             //Database Creation
             SQLiteDatabase mDatabaseHelper = new DatabaseHelper(this).getWritableDatabase();
+
+            // Database Debug
+            DatabaseHelper database = new DatabaseHelper(this);
+            database.insertPart(new Part("2119w076"));
 
             return true;
         }
