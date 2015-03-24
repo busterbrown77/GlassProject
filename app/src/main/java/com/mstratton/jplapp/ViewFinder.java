@@ -269,6 +269,10 @@ public class ViewFinder extends Activity {
         return false;
     }
 
+    public void debugParts(){
+
+    }
+
 //    Weird, using this causes app to be locked on. No gestures, must exit through menu.
 //    @Override
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {

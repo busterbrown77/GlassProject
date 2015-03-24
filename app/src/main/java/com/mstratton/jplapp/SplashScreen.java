@@ -31,6 +31,8 @@ public class SplashScreen extends Activity {
 
     CardScrollView csvCardsView;
 
+    DatabaseHelper mDatabaseHelper;
+
     // For Startup Checks
     final Handler handler = new Handler();
 
@@ -40,8 +42,6 @@ public class SplashScreen extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         cardList = new ArrayList<View>();
 
-
-        DatabaseMaker db = new DatabaseMaker();
         // Create the Loading Card
         View cardLoad = new CardBuilder(this, CardBuilder.Layout.MENU)
                 .setText("Loading...")
@@ -96,12 +96,13 @@ public class SplashScreen extends Activity {
         File file = new File(appDir, "info.txt");
 
 
+
         if (file.exists()) {
             // File Exists, start next activity now
             handler.postDelayed(runDone,800);
-
             return true;
         } else {
+            TestData();
             // File does not exist, must create it
             // Start next activity in a few seconds (ensure files / db below are created)
             handler.postDelayed(runDone, 1100);
@@ -133,6 +134,7 @@ public class SplashScreen extends Activity {
             }
             return true;
         }
+
     }
 
     Runnable runData = new Runnable() {
@@ -158,6 +160,96 @@ public class SplashScreen extends Activity {
             startActivity(intent);
         }
     };
+
+    public void TestData(){
+        mDatabaseHelper = new DatabaseHelper(this);
+        Part newPart = new Part("TEMP");
+
+        //Part1
+        newPart.setPartID("2119w078");
+        newPart.setPartStatus("Connected");
+        newPart.setPartSpecs("Width: 15 inches" +
+                "Length: 30 inches" +
+                "MaxTemp: 100F" +
+                "Material: Sammium");
+        newPart.setPartName("Actuator");
+        newPart.setChecklistSize(1);
+        newPart.setChecklistTask("Connect Socket");
+
+        mDatabaseHelper.insertChecklistTask(newPart, 0, 0);
+        newPart.setChecklistTask("Turn Handle");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, 0);
+        newPart.setChecklistTask("Admire Work");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, 0);
+        newPart.setChecklistTask("Collect Paycheck");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, 0);
+        //newPart.setVideoPath();
+        //newPart.setPhotoPath();
+
+        mDatabaseHelper.insertPart(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
+
+
+        //Part2
+        newPart.setPartID("2119w080");
+        newPart.setPartStatus("Destroyed");
+        newPart.setPartSpecs("Really giant" +
+                "Really round" +
+                "Also very square" +
+                "Running out of ideas");
+        newPart.setPartName("Backpack");
+        newPart.setChecklistSize(2);
+        newPart.setChecklistTask("Zip Backpack");
+
+
+        mDatabaseHelper.insertChecklistTask(newPart, 0, 0);
+        newPart.setChecklistTask("Walk Around");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, 0);
+        newPart.setChecklistTask("Look Cool");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, 0);
+        newPart.setChecklistTask("Help Me");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, 0);
+        newPart.setChecklistTask("Don't do anything");
+        mDatabaseHelper.insertChecklistTask(newPart, 0, 1);
+        newPart.setChecklistTask("second checklist works");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, 1);
+        newPart.setChecklistTask("YAY");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, 1);
+        newPart.setChecklistTask("WHO DAT!!!");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, 1);
+
+        //newPart.setVideoPath();
+        //newPart.setPhotoPath();
+
+        mDatabaseHelper.insertPart(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
+
+
+        //Part3
+        newPart.setPartID("2119w990");
+        newPart.setPartStatus("Platinum");
+        newPart.setPartSpecs("SPEC SPEC SPEC SPEC SPEC test");
+        newPart.setPartName("GLASSES");
+        newPart.setChecklistSize(1);
+        newPart.setChecklistTask("part 3 task 1");
+
+        mDatabaseHelper.insertChecklistTask(newPart, 0, 0);
+        newPart.setChecklistTask("part 3 task 2");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, 0);
+        newPart.setChecklistTask("part 3 task 3");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, 0);
+        newPart.setChecklistTask("You heard that new Fetty WAP?!?");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, 0);
+
+        //newPart.setVideoPath();
+        //newPart.setPhotoPath();
+
+        mDatabaseHelper.insertPart(newPart);
+        mDatabaseHelper.close();
+    }
+
 
 }
 
