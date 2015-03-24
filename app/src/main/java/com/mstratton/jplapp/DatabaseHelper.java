@@ -163,7 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public PartCursor queryChecklist(String part_id, int checklistID){
         Cursor wrapped = getReadableDatabase().query(TABLE_CHECKLIST, null,
                 COLUMN_PART_ID + " = ? AND " + COLUMN_CHECKLIST_CHECKLISTID + " = ?",
-                new String[]{part_id, checklistID+""}, null, null, null, null);
+                new String[]{part_id, checklistID + ""}, null, null, null, null);
         return new PartCursor(wrapped);
     }
 

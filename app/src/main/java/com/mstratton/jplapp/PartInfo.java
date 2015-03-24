@@ -81,16 +81,26 @@ public class PartInfo extends Activity {
         scannedPart = randomPart(partID);
         mDatabaseHelper = new DatabaseHelper(this);
         if (!retrievedFrom.equals("recentparts")) {
-            mDatabaseHelper.insertPart(scannedPart);
+            //mDatabaseHelper.insertPart(scannedPart);
             updated = false;
         }
         //mDatabaseHelper.insertScanHistory(scannedPart);
         DatabaseHelper.PartCursor dataCursor;
-        dataCursor = mDatabaseHelper.queryPart(partID);
+        //dataCursor = mDatabaseHelper.queryPart(partID);
+        //dataCursor.moveToFirst();
+        //if (!dataCursor.isAfterLast()) {
+        //    scannedPart = dataCursor.getPart();
+        //}
+        dataCursor = mDatabaseHelper.queryChecklist(partID, 0);
         dataCursor.moveToFirst();
-        if (!dataCursor.isAfterLast()) {
-            scannedPart = dataCursor.getPart();
+        String count;
+        while(!dataCursor.isAfterLast()){
+            scannedPart = dataCursor.getChecklist();
+            count = scannedPart.getChecklistTask();
+            Toast.makeText(this, count, Toast.LENGTH_SHORT).show();
+            dataCursor.moveToNext();
         }
+
         dataCursor.close();
 
         // Get Info from database using the code from QR Scanner.
