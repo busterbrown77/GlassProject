@@ -152,18 +152,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return new PartCursor(wrapped);
     }
 
-
-
     public PartCursor queryPart(String part_id){
         Cursor wrapped = getReadableDatabase().query(TABLE_PART, null, COLUMN_PART_ID +" = ?",
                 new String[]{part_id}, null, null, null, "1");
         return new PartCursor(wrapped);
     }
 
-    public PartCursor queryChecklist(String part_id, int checklistID){
+    public PartCursor queryChecklists(String part_id){
         Cursor wrapped = getReadableDatabase().query(TABLE_CHECKLIST, null,
-                COLUMN_PART_ID + " = ? AND " + COLUMN_CHECKLIST_CHECKLISTID + " = ?",
-                new String[]{part_id, checklistID + ""}, null, null, null, null);
+                COLUMN_PART_ID + " = ?",
+                new String[]{part_id}, null, null, null, null);
         return new PartCursor(wrapped);
     }
 
@@ -179,9 +177,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             Part part = new Part();
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
             part.setPartSpecs(getString(getColumnIndex(COLUMN_PART_DESCRIPTION)));
-            part.setPartName(getString(getColumnIndex(COLUMN_PART_DESCRIPTION)));
+            part.setPartName(getString(getColumnIndex(COLUMN_PART_NAME)));
             part.setPartStatus(getString(getColumnIndex(COLUMN_PART_STATUS)));
-            part.setPartStatus(getString(getColumnIndex(COLUMN_CHECKLIST_SIZE)));
+            part.setChecklistSize(getInt(getColumnIndex(COLUMN_CHECKLIST_SIZE)));
             return part;
         }
 
@@ -204,6 +202,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             Part part = new Part();
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
             part.setChecklistTask(getString(getColumnIndex(COLUMN_CHECKLIST_TASK)));
+            part.setChecklistID(getString(getColumnIndex(COLUMN_CHECKLIST_CHECKLISTID)));
             return part;
         }
 
