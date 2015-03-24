@@ -3,7 +3,6 @@ package com.mstratton.jplapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -28,9 +27,7 @@ public class SplashScreen extends Activity {
     private Slider mSlider;
     private Context mContext;
     private ArrayList<View> cardList;
-
     CardScrollView csvCardsView;
-
     DatabaseHelper mDatabaseHelper;
 
     // For Startup Checks
@@ -95,14 +92,11 @@ public class SplashScreen extends Activity {
         // Attempt to find info file in appdata dir
         File file = new File(appDir, "info.txt");
 
-
-
         if (file.exists()) {
             // File Exists, start next activity now
             handler.postDelayed(runDone,800);
             return true;
         } else {
-            TestData();
             // File does not exist, must create it
             // Start next activity in a few seconds (ensure files / db below are created)
             handler.postDelayed(runDone, 1100);
@@ -132,9 +126,12 @@ public class SplashScreen extends Activity {
             } catch (IOException nf) {
                 return false;
             }
+
+            //Generate Initial Database Data
+            TestData();
+
             return true;
         }
-
     }
 
     Runnable runData = new Runnable() {

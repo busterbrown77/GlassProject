@@ -22,6 +22,9 @@
         android:id="@+id/menu_video"
         android:title="@string/video" />
     <item
+        android:id="@+id/menu_photo"
+        android:title="@string/video" />
+    <item
         android:id="@+id/menu_checklist"
         android:title="@string/checklist" />
     <item
