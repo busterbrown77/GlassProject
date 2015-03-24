@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -17,12 +18,14 @@ import com.google.android.glass.widget.CardScrollView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class RecentParts extends Activity {
     String partID;
     private ArrayList<View> cardList;
     ArrayList<String> headInfo;
     CardScrollView csvCardsView;
+    DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,31 @@ public class RecentParts extends Activity {
 
         // Fill Array with saved part IDs from past scans...
         // Stuff..
-        headInfo =  new ArrayList<String>(Arrays.asList("Intake Filter", "Oil Filter", "Spark Plug"));
+        ArrayList<String> recentParts = new ArrayList<String>();
+        mDatabaseHelper = new DatabaseHelper(this);
+        Part part1 = new Part("Temp");
+        Part part2 = new Part("No History");
+        Part part3 = new Part("No History");
+        DatabaseHelper.PartCursor dataCursor;
+        dataCursor = mDatabaseHelper.queryRecent();
+        dataCursor.moveToFirst();
+        while(!dataCursor.isAfterLast() || recentParts.size() <= 3){
+            part1 = dataCursor.getTime();
+            if(!recentParts.contains(part1.getPartID())) {
+                recentParts.add(part1.getPartID());
+            }
+            dataCursor.moveToNext();
+        }
+        dataCursor = mDatabaseHelper.queryPart(recentParts.get(0));
+        dataCursor.moveToFirst();
+        part1 = dataCursor.getPart();
+        dataCursor = mDatabaseHelper.queryPart(recentParts.get(1));
+        dataCursor.moveToFirst();
+        part2 = dataCursor.getPart();
+        dataCursor = mDatabaseHelper.queryPart(recentParts.get(2));
+        dataCursor.moveToFirst();
+        part3 = dataCursor.getPart();
+        headInfo =  new ArrayList<String>(Arrays.asList(part1.getPartID(), part2.getPartID(), part3.getPartID()));
 
         // Create cards using information.
         // Cycle through the head and sub info arrays, each cell is a type of info.
@@ -40,7 +67,7 @@ public class RecentParts extends Activity {
 
             View tempView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
                     .setText(headInfo.get(i))
-                    .setFootnote("Recently Scanned")
+                    .setFootnote("Last Scan")
                     .setTimestamp("Today")
                     .getView();
             cardList.add(tempView);
@@ -152,5 +179,6 @@ public class RecentParts extends Activity {
         // Good practice to pass through to super if not handled
         return super.onMenuItemSelected(featureId, item);
     }
+
 
 }

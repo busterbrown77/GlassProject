@@ -11,7 +11,7 @@ public class Part {
     private String partID;
     private String partName;
     private String partSpecs;
-    private Date ScannedTime;
+    private String ScannedTime;
     private double locationLat;
     private double locationLong;
     private String photoPath;
@@ -42,11 +42,11 @@ public class Part {
         this.partSpecs = partSpecs;
     }
 
-    public Date getScannedTime() {
+    public String getScannedTime() {
         return ScannedTime;
     }
 
-    public void setScannedTime(Date scannedTime) {
+    public void setScannedTime(String scannedTime) {
         ScannedTime = scannedTime;
     }
 
@@ -99,7 +99,7 @@ public class Part {
         this.partName = "TEST";
     }
 
-    public Part(String partID, String partName, String partSpecs, Date ScannedTime,
+    public Part(String partID, String partName, String partSpecs, String ScannedTime,
                 double locationLat, double locationLong, String photoPath, String videoPath){
 
         this.partID = partID;

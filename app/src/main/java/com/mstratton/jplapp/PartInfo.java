@@ -15,8 +15,12 @@ import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+import android.database.Cursor;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class PartInfo extends Activity {
     int cardIndex;
@@ -26,9 +30,32 @@ public class PartInfo extends Activity {
     private ArrayList<String> subInfo;
     CardScrollView csvCardsView;
 
+    DatabaseHelper mDatabaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+      /*
+
+        String count = "";
+        Toast.makeText(this, count, Toast.LENGTH_SHORT).show();
+        test = new DatabaseHelper(this);
+        Toast.makeText(this, count, Toast.LENGTH_SHORT).show();
+        Part newPart = new Part("2119w076");
+        newPart.setPartSpecs("Winner");
+        test.updatePart(newPart);
+        DatabaseHelper.PartCursor c;
+        c = test.queryPart("2119w076");
+        c.moveToFirst();
+        if(!c.isAfterLast()) {
+            count = c.getPart().getPartSpecs();
+        }else{
+            count = "Broken!";
+        }
+        Toast.makeText(this, count, Toast.LENGTH_SHORT).show();
+
+        */
 
         // Get partID passed from the Viewfinder Activity
         Bundle extras = getIntent().getExtras();
@@ -36,16 +63,32 @@ public class PartInfo extends Activity {
             partID = extras.getString("KEY");
         }
 
+        Part newPart = new Part(partID);
+        newPart = randomPart(partID);
+        Part scannedPart = new Part(partID);
+        scannedPart = randomPart(partID);
+        mDatabaseHelper = new DatabaseHelper(this);
+        mDatabaseHelper.insertPart(scannedPart);
+        //mDatabaseHelper.insertScanHistory(scannedPart);
+        DatabaseHelper.PartCursor dataCursor;
+        dataCursor = mDatabaseHelper.queryPart(partID);
+        dataCursor.moveToFirst();
+        if(!dataCursor.isAfterLast()) {
+            scannedPart = dataCursor.getPart();
+        }
+        dataCursor.close();
+
+
         // Get Info from database using the code from QR Scanner.
         // Stuff
 
         // Fill Array with information about part.
         headInfo =  new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Checklists", "Logged History", "Specifications"));
-        subInfo = new ArrayList<String>(Arrays.asList("Detected a " + partID + " part. \n \n ",
+        subInfo = new ArrayList<String>(Arrays.asList("Detected a " + scannedPart.getPartID() + " part. \n \n ",
                                                       "Video will be Here, can be pinned to main screen.",
                                                       "Checklists and Tutorials for Installation / Disassembly will be here, can be pinned to main screen.",
-                                                      "Any logged maintenance or issues will sppear here.",
-                                                      "Various Specifications will be here."));
+                                                      "Any logged maintenance or issues will appear here.",
+                                                      scannedPart.getPartSpecs()));
 
         // Create cards using information.
         // Cycle through the head and sub info arrays, each cell is a type of info.
@@ -214,5 +257,13 @@ public class PartInfo extends Activity {
         // Good practice to pass through to super if not handled
         return super.onMenuItemSelected(featureId, item);
     }
-
+    public Part randomPart(String id){
+        Part createdPart = new Part(id);
+        createdPart.setPartName("Test Part 1");
+        createdPart.setPartSpecs("SPECS SPECS SPECS SPECS SPECS");
+        createdPart.setScannedTime("00000");
+        createdPart.setLocationLat(11.01);
+        createdPart.setLocationLong(88.08);
+        return createdPart;
+    }
 }
