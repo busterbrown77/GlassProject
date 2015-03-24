@@ -19,6 +19,7 @@ public class Part {
     private String videoPath;
     private ArrayList<String> checklist;
     private int checklistSize;
+    private String checklistID;
     private String checklistTask;
     private String partStatus;
 
@@ -28,6 +29,14 @@ public class Part {
 
     public void setPartName(String partName) {
         this.partName = partName;
+    }
+
+    public String getChecklistID() {
+        return checklistID;
+    }
+
+    public void setChecklistID(String id){
+        this.checklistID = id;
     }
 
     public String getPartID() {
