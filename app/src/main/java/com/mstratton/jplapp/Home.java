@@ -134,6 +134,7 @@ public class Home extends Activity {
             Intent myIntent = new Intent(Home.this, PartInfo.class);
             // Attach the part info from viewfinder.
             myIntent.putExtra("KEY", filteredText);
+            myIntent.putExtra("RETRIEVED_FROM", "voicesearch");
             // Start the Part View class
             this.startActivity(myIntent);
         }

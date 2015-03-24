@@ -2,6 +2,10 @@ package com.mstratton.jplapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,12 +29,19 @@ import java.util.Date;
 public class PartInfo extends Activity {
     int cardIndex;
     String partID;
+    String retrievedFrom;
     private ArrayList<View> cardList;
     private ArrayList<String> headInfo;
     private ArrayList<String> subInfo;
     CardScrollView csvCardsView;
 
     DatabaseHelper mDatabaseHelper;
+    Part scannedPart;
+
+
+    public LocationListener mLocationListener;
+    public Criteria criteria;
+    boolean updated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,36 +70,39 @@ public class PartInfo extends Activity {
 
         // Get partID passed from the Viewfinder Activity
         Bundle extras = getIntent().getExtras();
-        if(extras !=null) {
+        if (extras != null) {
             partID = extras.getString("KEY");
+            retrievedFrom = extras.getString("RETRIEVED_FROM");
         }
 
         Part newPart = new Part(partID);
         newPart = randomPart(partID);
-        Part scannedPart = new Part(partID);
+        scannedPart = new Part(partID);
         scannedPart = randomPart(partID);
         mDatabaseHelper = new DatabaseHelper(this);
-        mDatabaseHelper.insertPart(scannedPart);
+        if (!retrievedFrom.equals("recentparts")) {
+            mDatabaseHelper.insertPart(scannedPart);
+            updated = false;
+        }
         //mDatabaseHelper.insertScanHistory(scannedPart);
         DatabaseHelper.PartCursor dataCursor;
         dataCursor = mDatabaseHelper.queryPart(partID);
         dataCursor.moveToFirst();
-        if(!dataCursor.isAfterLast()) {
+        if (!dataCursor.isAfterLast()) {
             scannedPart = dataCursor.getPart();
         }
         dataCursor.close();
-
 
         // Get Info from database using the code from QR Scanner.
         // Stuff
 
         // Fill Array with information about part.
-        headInfo =  new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Checklists", "Logged History", "Specifications"));
+        headInfo = new ArrayList<String>(Arrays.asList("Part Detected!", "Video", "Checklists", "Logged History", "Specifications"));
         subInfo = new ArrayList<String>(Arrays.asList("Detected a " + scannedPart.getPartID() + " part. \n \n ",
-                                                      "Video will be Here, can be pinned to main screen.",
-                                                      "Checklists and Tutorials for Installation / Disassembly will be here, can be pinned to main screen.",
-                                                      "Any logged maintenance or issues will appear here.",
-                                                      scannedPart.getPartSpecs()));
+                "Video will be Here, can be pinned to main screen.",
+                "Checklists and Tutorials for Installation / Disassembly will be here, can be pinned to main screen.",
+                "Any logged maintenance or issues will appear here.",
+                scannedPart.getPartSpecs()));
 
         // Create cards using information.
         // Cycle through the head and sub info arrays, each cell is a type of info.
@@ -115,17 +129,18 @@ public class PartInfo extends Activity {
                 View tempCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
                         .setText(subInfo.get(i))
                         .setFootnote(headInfo.get(i))
-                        //.addImage(R.drawable.intake)
+                                //.addImage(R.drawable.intake)
                         .getView();
                 cardList.add(tempCard);
             } else {
                 View tempCard = new CardBuilder(this, CardBuilder.Layout.TEXT)
                         .setText(headInfo.get(i))
                         .setFootnote(subInfo.get(i))
-                        //.addImage(R.drawable.intake)
+                                //.addImage(R.drawable.intake)
                         .getView();
                 cardList.add(tempCard);
             }
+
 
         }
 
@@ -135,8 +150,7 @@ public class PartInfo extends Activity {
         csvCardsView.activate();
         csvCardsView.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //save the card index that was selected
                 cardIndex = position;
 
@@ -161,6 +175,48 @@ public class PartInfo extends Activity {
 
         // Show cardview after setup
         setContentView(csvCardsView);
+
+        if(!updated) {
+            LocationManager locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            String provider;
+            provider = locationManager.getBestProvider(criteria, true);
+            boolean isEnabled = locationManager.isProviderEnabled(provider);
+            if (isEnabled) {
+                // Define a listener that responds to location updates
+                LocationListener locationListener = new LocationListener() {
+
+
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        makeUseOfNewLocation(location);
+                    }
+
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                    }
+
+                    public void onProviderEnabled(String provider) {
+                    }
+
+                    public void onProviderDisabled(String provider) {
+                    }
+
+                };
+
+                // Register the listener with the Location Manager to receive location updates
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
+            }
+        }
+
+    }
+
+    public void makeUseOfNewLocation(Location location){
+        if(!updated) {
+            scannedPart.setLocationLat(location.getLatitude());
+            scannedPart.setLocationLong(location.getLongitude());
+            mDatabaseHelper.insertScanHistory(scannedPart);
+        }
     }
 
     private class csaAdapter extends CardScrollAdapter {
@@ -259,11 +315,21 @@ public class PartInfo extends Activity {
     }
     public Part randomPart(String id){
         Part createdPart = new Part(id);
-        createdPart.setPartName("Test Part 1");
-        createdPart.setPartSpecs("SPECS SPECS SPECS SPECS SPECS");
+        createdPart.setPartName("Actuator");
+        createdPart.setPartSpecs("Coil Resistance(+/-10%) Ohms21 \n" +
+                "Size(Length x Diameter(inch)2.5 x 0.6\n" +
+                "Voltage 12\n" +
+                "Holding Force (lbs @200C) 1.5\n" +
+                "Power Consumption (W)7\n" +
+                "Shaft Diameter(inch) 0,098\n" +
+                "Stroke 0.24\n" +
+                "Weight (lbs) 0.1");
         createdPart.setScannedTime("00000");
         createdPart.setLocationLat(11.01);
         createdPart.setLocationLong(88.08);
         return createdPart;
     }
+
 }
+
+

@@ -128,6 +128,7 @@ public class RecentParts extends Activity {
         Intent myIntent = new Intent(RecentParts.this, PartInfo.class);
         // Attach the part info from viewfinder.
         myIntent.putExtra("KEY", partID);
+        myIntent.putExtra("RETRIEVED_FROM", "recentparts");
         // Start the Part View class
         startActivity(myIntent);
     }

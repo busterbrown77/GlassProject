@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * Created by Sam on 2/2/2015.
  */
+
 public class Part {
 
     private String partID;
@@ -17,6 +18,9 @@ public class Part {
     private String photoPath;
     private String videoPath;
     private ArrayList<String> checklist;
+    private int checklistSize;
+    private String checklistTask;
+    private String partStatus;
 
     public String getPartName() {
         return partName;
@@ -55,7 +59,7 @@ public class Part {
     }
 
     public void setLocationLat(double locationLat) {
-        locationLat = locationLat;
+        this.locationLat = locationLat;
     }
 
     public double getLocationLong() {
@@ -89,6 +93,31 @@ public class Part {
     public void setChecklist(ArrayList<String> checklist) {
         this.checklist = checklist;
     }
+
+    public int getChecklistSize(){
+        return checklistSize;
+    }
+
+    public void setChecklistSize(int size){
+        this.checklistSize = size;
+    }
+
+    public void setPartStatus(String status){
+        this.partStatus = status;
+    }
+
+    public String getPartStatus(){
+        return partStatus;
+    }
+
+    public void setChecklistTask(String task){
+        this.checklistTask = task;
+    }
+
+    public String getChecklistTask(){
+        return checklistTask;
+    }
+
 
     public Part(String partID){
         this.partID = partID;

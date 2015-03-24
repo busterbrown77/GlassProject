@@ -26,6 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_PART_ID = "_id";
     private static final String COLUMN_PART_DESCRIPTION ="partDescription";
     private static final String COLUMN_PART_NAME = "partName";
+    private static final String COLUMN_PART_STATUS = "partStatus";
+    private static final String COLUMN_CHECKLIST_SIZE = "checklistSize";
 
     private static final String COLUMN_SCAN_LAT = "locationLat";
     private static final String COLUMN_SCAN_LONG = "locationLong";
@@ -34,8 +36,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_PICTURES = "picPaths";
     private static final String COLUMN_VIDEOS = "vidPaths";
 
-    private static final String COLUMN_CHECKLIST_TASK = "checklist_task";
-    private static final String COLUMN_INTEGRATION_STATUS = "integration_status";
+    private static final String COLUMN_CHECKLIST_TASK = "process";
+    private static final String COLUMN_CHECKLIST_TASKID = "taskID";
+    private static final String COLUMN_CHECKLIST_CHECKLISTID = "checklistID";
     private static final String COLUMN_SPECIAL_ITEMS = "special_items";
 
 
@@ -50,10 +53,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + "_id TEXT PRIMARY KEY,"
                 + "partName TEXT,"
                 + "partDescription TEXT,"
-                + "partSpecs TEXT)");
+                + "partSpecs TEXT,"
+                + "partStatus TEXT,"
+                + "checklistSize INTEGER)");
         db.execSQL("create table checklistPart("
                 + "_id TEXT,"
                 + "process TEXT,"
+                + "taskID INTEGER,"
+                + "checklistID INTEGER,"
                 + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
         db.execSQL("create table scannedPart("
                 + "_id TEXT,"
@@ -81,9 +88,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         cvPartDB.put(COLUMN_PART_ID, part.getPartID());
         cvPartDB.put(COLUMN_PART_DESCRIPTION, part.getPartSpecs());
         cvPartDB.put(COLUMN_PART_NAME, part.getPartName());
+        cvPartDB.put(COLUMN_PART_STATUS, part.getPartStatus());
+        cvPartDB.put(COLUMN_CHECKLIST_SIZE, part.getChecklistSize());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_PART, null, cvPartDB);
         insertScanHistory(part);
+    }
+
+    public void insertChecklistTask(Part part, int taskNumber, int checklistNumber){
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_PART_ID, part.getPartID());
+        cv.put(COLUMN_CHECKLIST_TASK, part.getChecklistTask());
+        cv.put(COLUMN_CHECKLIST_CHECKLISTID, checklistNumber);
+        cv.put(COLUMN_CHECKLIST_TASKID, taskNumber);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(TABLE_CHECKLIST, null, cv);
     }
 
     public void insertScanHistory(Part part){
@@ -141,6 +160,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return new PartCursor(wrapped);
     }
 
+    public PartCursor queryChecklist(String part_id, int checklistID){
+        Cursor wrapped = getReadableDatabase().query(TABLE_CHECKLIST, null,
+                COLUMN_PART_ID + " = ? AND " + COLUMN_CHECKLIST_CHECKLISTID + " = ?",
+                new String[]{part_id, checklistID+""}, null, null, null, null);
+        return new PartCursor(wrapped);
+    }
+
     public static class PartCursor extends CursorWrapper{
         public PartCursor(Cursor c){
             super(c);
@@ -154,8 +180,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
             part.setPartSpecs(getString(getColumnIndex(COLUMN_PART_DESCRIPTION)));
             part.setPartName(getString(getColumnIndex(COLUMN_PART_DESCRIPTION)));
+            part.setPartStatus(getString(getColumnIndex(COLUMN_PART_STATUS)));
+            part.setPartStatus(getString(getColumnIndex(COLUMN_CHECKLIST_SIZE)));
             return part;
-
         }
 
         public Part getTime(){
@@ -165,9 +192,22 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             Part part = new Part();
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
             part.setScannedTime(getString(getColumnIndex(COLUMN_SCAN_TIME)));
+            part.setLocationLat(getDouble(getColumnIndex(COLUMN_SCAN_LAT)));
+            part.setLocationLong(getDouble(getColumnIndex(COLUMN_SCAN_LONG)));
             return part;
-
         }
+
+        public Part getChecklist(){
+            if(isBeforeFirst() || isAfterLast()){
+                return null;
+            }
+            Part part = new Part();
+            part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
+            part.setChecklistTask(getString(getColumnIndex(COLUMN_CHECKLIST_TASK)));
+            return part;
+        }
+
+
     }
 
 }

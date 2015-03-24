@@ -165,6 +165,7 @@ public class ViewFinder extends Activity {
                     Intent myIntent = new Intent(ViewFinder.this, PartInfo.class);
                     // Attach the part info from viewfinder.
                     myIntent.putExtra("KEY", partID);
+                    myIntent.putExtra("RETRIEVED_FROM", "viewfinder");
                     // Start the Part View class
                     ViewFinder.this.startActivity(myIntent);
 
