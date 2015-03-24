@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -16,48 +17,60 @@ import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 public class RecentParts extends Activity {
     String partID;
     private ArrayList<View> cardList;
-    private ArrayList<Part> partList;
+    ArrayList<String> headInfo;
     CardScrollView csvCardsView;
-    int maxrecentAmount = 1;                   // The amount of recent parts to load
+    DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Fill Array with part IDs from past scans...
-        // SQL Query top 3 last accessed to partInfo array
-        partList = new ArrayList<Part>();
-        for (int i = 0; i < maxrecentAmount; i++) {
-            //Part part = getfromdatabase
-            Part part = new Part("TEST");
-
-            partList.add(part);
+        // Fill Array with saved part IDs from past scans...
+        // Stuff..
+        ArrayList<String> recentParts = new ArrayList<String>();
+        mDatabaseHelper = new DatabaseHelper(this);
+        Part part1 = new Part("Temp");
+        Part part2 = new Part("No History");
+        Part part3 = new Part("No History");
+        DatabaseHelper.PartCursor dataCursor;
+        dataCursor = mDatabaseHelper.queryRecent();
+        dataCursor.moveToFirst();
+        while(!dataCursor.isAfterLast() || recentParts.size() <= 3){
+            part1 = dataCursor.getTime();
+            if(!recentParts.contains(part1.getPartID())) {
+                recentParts.add(part1.getPartID());
+            }
+            dataCursor.moveToNext();
         }
+        dataCursor = mDatabaseHelper.queryPart(recentParts.get(0));
+        dataCursor.moveToFirst();
+        part1 = dataCursor.getPart();
+        dataCursor = mDatabaseHelper.queryPart(recentParts.get(1));
+        dataCursor.moveToFirst();
+        part2 = dataCursor.getPart();
+        dataCursor = mDatabaseHelper.queryPart(recentParts.get(2));
+        dataCursor.moveToFirst();
+        part3 = dataCursor.getPart();
+        headInfo =  new ArrayList<String>(Arrays.asList(part1.getPartID(), part2.getPartID(), part3.getPartID()));
 
-        // Create cards using part information.
+        // Create cards using information.
+        // Cycle through the head and sub info arrays, each cell is a type of info.
+        // 0 = Picture, 1 = Video, 2 = Specs, 3 = Specs, 4 = Specs
         cardList = new ArrayList<View>();
-        for (int i = 0; i < partList.size(); i++) {
+        for (int i = 0; i < headInfo.size(); i++) {
 
-            View view = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                    .setText(partList.get(i).getPartID())
-                    //.addImage()
-                    .setFootnote("Recently Scanned")
-                    .setTimestamp("Today")//partList.get(i).getScannedTime().toString())
+            View tempView = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                    .setText(headInfo.get(i))
+                    .setFootnote("Last Scan")
+                    .setTimestamp("Today")
                     .getView();
-            cardList.add(view);
-        }
-
-        // Display a "no parts" card if no recent parts
-        if (partList.size() == 0) {
-            View addNoneCard = new CardBuilder(this, CardBuilder.Layout.MENU)
-                    .setText("No Recent Parts")
-                    .setFootnote("")
-                    .getView();
-            cardList.add(addNoneCard);
+            cardList.add(tempView);
         }
 
         csvCardsView = new CardScrollView(this);
@@ -70,9 +83,7 @@ public class RecentParts extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 // Open partview for selected part
-                if (partList.size() > 0) {
-                    openPartView();
-                }
+                openPartView();
             }
         });
 
@@ -111,12 +122,13 @@ public class RecentParts extends Activity {
 
     public void openPartView () {
         // Get selected card info
-        partID = partList.get(csvCardsView.getSelectedItemPosition()).getPartID();
+        partID = headInfo.get(csvCardsView.getSelectedItemPosition());
 
         // Define Part View Class
         Intent myIntent = new Intent(RecentParts.this, PartInfo.class);
         // Attach the part info from viewfinder.
         myIntent.putExtra("KEY", partID);
+        myIntent.putExtra("RETRIEVED_FROM", "recentparts");
         // Start the Part View class
         startActivity(myIntent);
     }
@@ -168,5 +180,6 @@ public class RecentParts extends Activity {
         // Good practice to pass through to super if not handled
         return super.onMenuItemSelected(featureId, item);
     }
+
 
 }

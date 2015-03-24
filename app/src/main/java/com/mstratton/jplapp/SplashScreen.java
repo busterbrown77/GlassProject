@@ -27,7 +27,8 @@ public class SplashScreen extends Activity {
     private Slider.Indeterminate mIndeterminate;
     private Slider mSlider;
     private Context mContext;
-    private ArrayList<View> cardList;    
+    private ArrayList<View> cardList;
+
     CardScrollView csvCardsView;
 
     // For Startup Checks
@@ -39,6 +40,8 @@ public class SplashScreen extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         cardList = new ArrayList<View>();
 
+
+        DatabaseMaker db = new DatabaseMaker();
         // Create the Loading Card
         View cardLoad = new CardBuilder(this, CardBuilder.Layout.MENU)
                 .setText("Loading...")
@@ -92,6 +95,7 @@ public class SplashScreen extends Activity {
         // Attempt to find info file in appdata dir
         File file = new File(appDir, "info.txt");
 
+
         if (file.exists()) {
             // File Exists, start next activity now
             handler.postDelayed(runDone,800);
@@ -127,14 +131,6 @@ public class SplashScreen extends Activity {
             } catch (IOException nf) {
                 return false;
             }
-
-            //Database Creation
-            SQLiteDatabase mDatabaseHelper = new DatabaseHelper(this).getWritableDatabase();
-
-            // Database Debug
-            DatabaseHelper database = new DatabaseHelper(this);
-            database.insertPart(new Part("2119w076"));
-
             return true;
         }
     }

@@ -6,17 +6,21 @@ import java.util.Date;
 /**
  * Created by Sam on 2/2/2015.
  */
+
 public class Part {
 
     private String partID;
     private String partName;
     private String partSpecs;
-    private Date ScannedTime;
+    private String ScannedTime;
     private double locationLat;
     private double locationLong;
     private String photoPath;
     private String videoPath;
     private ArrayList<String> checklist;
+    private int checklistSize;
+    private String checklistTask;
+    private String partStatus;
 
     public String getPartName() {
         return partName;
@@ -42,11 +46,11 @@ public class Part {
         this.partSpecs = partSpecs;
     }
 
-    public Date getScannedTime() {
+    public String getScannedTime() {
         return ScannedTime;
     }
 
-    public void setScannedTime(Date scannedTime) {
+    public void setScannedTime(String scannedTime) {
         ScannedTime = scannedTime;
     }
 
@@ -55,7 +59,7 @@ public class Part {
     }
 
     public void setLocationLat(double locationLat) {
-        locationLat = locationLat;
+        this.locationLat = locationLat;
     }
 
     public double getLocationLong() {
@@ -90,6 +94,31 @@ public class Part {
         this.checklist = checklist;
     }
 
+    public int getChecklistSize(){
+        return checklistSize;
+    }
+
+    public void setChecklistSize(int size){
+        this.checklistSize = size;
+    }
+
+    public void setPartStatus(String status){
+        this.partStatus = status;
+    }
+
+    public String getPartStatus(){
+        return partStatus;
+    }
+
+    public void setChecklistTask(String task){
+        this.checklistTask = task;
+    }
+
+    public String getChecklistTask(){
+        return checklistTask;
+    }
+
+
     public Part(String partID){
         this.partID = partID;
     }
@@ -99,7 +128,7 @@ public class Part {
         this.partName = "TEST";
     }
 
-    public Part(String partID, String partName, String partSpecs, Date ScannedTime,
+    public Part(String partID, String partName, String partSpecs, String ScannedTime,
                 double locationLat, double locationLong, String photoPath, String videoPath){
 
         this.partID = partID;
