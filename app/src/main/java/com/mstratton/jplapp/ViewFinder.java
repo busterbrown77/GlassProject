@@ -57,6 +57,16 @@ public class ViewFinder extends Activity {
         setContentView(R.layout.viewfinder);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        // Determine if fail code received, and notify
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String CODE = extras.getString("KEY");
+
+            if (CODE.equals("NOT_FOUND")) {
+                Toast.makeText(this, "Part Not Found.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         autoFocusHandler = new Handler();
 
         //For some reason, right after launching from the "ok, glass" menu the camera is locked

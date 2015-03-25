@@ -16,6 +16,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/menu_addvideo"
+        android:title="@string/addvideo" />
+    <item
+        android:id="@+id/menu_addphoto"
+        android:title="@string/addphoto" />
+    <item
         android:id="@+id/menu_detail"
         android:title="@string/detail" />
     <item
@@ -23,7 +29,7 @@
         android:title="@string/video" />
     <item
         android:id="@+id/menu_photo"
-        android:title="@string/video" />
+        android:title="@string/photo" />
     <item
         android:id="@+id/menu_checklist"
         android:title="@string/checklist" />

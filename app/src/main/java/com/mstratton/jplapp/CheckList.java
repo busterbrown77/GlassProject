@@ -14,15 +14,16 @@ import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CheckList extends Activity {
     int cardIndex;
     String partID;
+    String checklistID;
     private ArrayList<View> cardList;
-    private ArrayList<String> headInfo;
-    private ArrayList<String> subInfo;
+    private ArrayList<String> checklistrow;
+    private ArrayList<String> steps;
     CardScrollView csvCardsView;
+    DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,28 +33,43 @@ public class CheckList extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             partID = extras.getString("KEY");
+            checklistID = extras.getString("KEY2");
         }
 
         // Get Info from database using the code from QR Scanner.
-        // Stuff
 
-        // Fill Array with information about part.
-        headInfo = new ArrayList<String>(Arrays.asList(
-                "First Step is...",
-                "Second Step is...",
-                "Third Step is...",
-                "Fourth Step is...",
-                "Fifth Step is..."
-        ));
+        // Fill Array with saved part IDs from past scans...
+        ArrayList<String> recentParts = new ArrayList<String>();
+        mDatabaseHelper = new DatabaseHelper(this);
+
+        DatabaseHelper.PartCursor dataCursor;
+        dataCursor = mDatabaseHelper.queryChecklists(partID);
+        dataCursor.moveToFirst();
+
+        Part temp = new Part("temp");
+        checklistrow = new ArrayList<String>();
+        while(!dataCursor.isAfterLast()){
+            temp = dataCursor.getChecklist();
+            if(temp.getChecklistID().equals(checklistID)) {
+                checklistrow.add(temp.getChecklistTask());
+            }
+            dataCursor.moveToNext();
+        }
+
+        dataCursor = mDatabaseHelper.queryPart(partID);
+        steps = new ArrayList<String>();
+        for (int i = 0; i < checklistrow.size(); i++) {
+            steps.add(checklistrow.get(i));
+
+        }
 
         // Create cards using information.
         // Cycle through the head and sub info arrays, each cell has the info for each step.
         cardList = new ArrayList<View>();
-        for (int i = 0; i < headInfo.size(); i++) {
+        for (int i = 0; i < steps.size(); i++) {
 
             View tempView = new CardBuilder(this, CardBuilder.Layout.MENU)
-                    .setText(headInfo.get(i))
-//                        .addImage(R.drawable.screw)
+                    .setText(steps.get(i))
                     .getView();
             cardList.add(tempView);
         }
@@ -67,8 +83,6 @@ public class CheckList extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //save the card index that was selected
                 cardIndex = position;
-
-                // Stuff? Remove this if not used anymore.
             }
 
         });

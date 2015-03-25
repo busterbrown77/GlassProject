@@ -12,7 +12,10 @@
     <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>
 
     <string name="detail">Detail</string>
-    <string name="video">Video</string>
+    <string name="video">Videos</string>
+    <string name="addvideo">Add Video</string>
+    <string name="photo">Photos</string>
+    <string name="addphoto">Add Photo</string>
     <string name="checklist">Checklists</string>
     <string name="history">History</string>
     <string name="specs">Specs</string>

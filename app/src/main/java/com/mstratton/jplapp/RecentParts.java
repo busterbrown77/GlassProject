@@ -23,14 +23,13 @@ public class RecentParts extends Activity {
     private ArrayList<Part> partList;
     CardScrollView csvCardsView;
     DatabaseHelper mDatabaseHelper;
-    int recentAmount = 1;
+    int recentAmount = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Fill Array with saved part IDs from past scans...
-        // Stuff..
         ArrayList<String> recentParts = new ArrayList<String>();
         mDatabaseHelper = new DatabaseHelper(this);
 
@@ -39,7 +38,7 @@ public class RecentParts extends Activity {
         dataCursor.moveToFirst();
 
         Part temp = new Part("temp");
-        while(!dataCursor.isAfterLast() || recentParts.size() <= recentAmount){
+        while(!dataCursor.isAfterLast() && recentParts.size() <= recentAmount){
             temp = dataCursor.getTime();
             if(!recentParts.contains(temp.getPartID())) {
                 recentParts.add(temp.getPartID());
@@ -48,10 +47,9 @@ public class RecentParts extends Activity {
         }
 
         // Fill Array with part IDs from past scans...
-        // SQL Query top 3 last accessed to partInfo array
         partList = new ArrayList<Part>();
-        for (int i = 0; i < recentAmount; i++) {
-            dataCursor = mDatabaseHelper.queryPart(recentParts.get(i-1));
+        for (int i = 0; i < recentParts.size(); i++) {
+            dataCursor = mDatabaseHelper.queryPart(recentParts.get(i));
             dataCursor.moveToFirst();
             Part part = dataCursor.getPart();
 

@@ -173,13 +173,13 @@ public class SplashScreen extends Activity {
         newPart.setChecklistSize(1);
         newPart.setChecklistTask("Connect Socket");
 
-        mDatabaseHelper.insertChecklistTask(newPart, 0, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
         newPart.setChecklistTask("Turn Handle");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
         newPart.setChecklistTask("Admire Work");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
         newPart.setChecklistTask("Collect Paycheck");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
         //newPart.setVideoPath();
         //newPart.setPhotoPath();
 
@@ -200,28 +200,30 @@ public class SplashScreen extends Activity {
         newPart.setChecklistTask("Zip Backpack");
 
 
-        mDatabaseHelper.insertChecklistTask(newPart, 0, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
         newPart.setChecklistTask("Walk Around");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
         newPart.setChecklistTask("Look Cool");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
         newPart.setChecklistTask("Help Me");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
         newPart.setChecklistTask("Don't do anything");
-        mDatabaseHelper.insertChecklistTask(newPart, 0, 1);
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist1");
         newPart.setChecklistTask("second checklist works");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, 1);
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist1");
         newPart.setChecklistTask("YAY");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, 1);
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist1");
         newPart.setChecklistTask("WHO DAT!!!");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, 1);
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist1");
 
-        //newPart.setVideoPath();
-        //newPart.setPhotoPath();
+        newPart.setVideoPath(getApplicationContext().getFilesDir() + "/videos/awesomesauce.mp4");
+        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/6PKW2Al.jpg");
+        newPart.setPicName("AHAHAHHANO");
+        newPart.setVidName("AWESOME");
 
         mDatabaseHelper.insertPart(newPart);
-        //mDatabaseHelper.attachPicture(newPart);
-        //mDatabaseHelper.attachPicture(newPart);
+        mDatabaseHelper.attachPicture(newPart);
+        mDatabaseHelper.attachVideo(newPart);
 
 
         //Part3
@@ -232,13 +234,35 @@ public class SplashScreen extends Activity {
         newPart.setChecklistSize(1);
         newPart.setChecklistTask("part 3 task 1");
 
-        mDatabaseHelper.insertChecklistTask(newPart, 0, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
         newPart.setChecklistTask("part 3 task 2");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
         newPart.setChecklistTask("part 3 task 3");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
         newPart.setChecklistTask("You heard that new Fetty WAP?!?");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, 0);
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
+
+        //newPart.setVideoPath();
+        //newPart.setPhotoPath();
+
+        mDatabaseHelper.insertPart(newPart);
+
+
+        //Part4
+        newPart.setPartID("2119w995");
+        newPart.setPartStatus("Unobtainium");
+        newPart.setPartSpecs("SPE test");
+        newPart.setPartName("FGDSLKRNFG");
+        newPart.setChecklistSize(1);
+        newPart.setChecklistTask("part 3 task 1");
+
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
+        newPart.setChecklistTask("part 3 task 2");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
+        newPart.setChecklistTask("part 3 task 3");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
+        newPart.setChecklistTask("You heard that new Fetty WAP?!?");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
 
         //newPart.setVideoPath();
         //newPart.setPhotoPath();

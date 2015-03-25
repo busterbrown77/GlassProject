@@ -1,16 +1,12 @@
 package com.mstratton.jplapp;
 
-import android.content.Context;
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.widget.Toast;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by Sam on 2/2/2015.
- */
 public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String DB_NAME = "JPL_DATABASE.sqlite";
     private static int VERSION = 1;
@@ -33,8 +29,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_SCAN_LONG = "locationLong";
     private static final String COLUMN_SCAN_TIME = "scanTime";
 
-    private static final String COLUMN_PICTURES = "picPaths";
-    private static final String COLUMN_VIDEOS = "vidPaths";
+    private static final String COLUMN_PICTURE_PATH = "picPaths";
+    private static final String COLUMN_VIDEO_PATH = "vidPaths";
+    private static final String COLUMN_PICTURE_NAME = "picName";
+    private static final String COLUMN_VIDEO_NAME = "vidName";
 
     private static final String COLUMN_CHECKLIST_TASK = "process";
     private static final String COLUMN_CHECKLIST_TASKID = "taskID";
@@ -60,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + "_id TEXT,"
                 + "process TEXT,"
                 + "taskID INTEGER,"
-                + "checklistID INTEGER,"
+                + "checklistID TEXT,"
                 + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
         db.execSQL("create table scannedPart("
                 + "_id TEXT,"
@@ -71,10 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("create table picturePart ("
                 + "_id TEXT,"
                 + "picPaths TEXT,"
+                + "picName,"
                 + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
         db.execSQL("create table videoPart ("
                 + "_id TEXT,"
                 + "vidPaths TEXT,"
+                + "vidName,"
                 + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
     }
 
@@ -95,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         insertScanHistory(part);
     }
 
-    public void insertChecklistTask(Part part, int taskNumber, int checklistNumber){
+    public void insertChecklistTask(Part part, int taskNumber, String checklistNumber){
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PART_ID, part.getPartID());
         cv.put(COLUMN_CHECKLIST_TASK, part.getChecklistTask());
@@ -126,16 +126,18 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     public void attachPicture(Part part){
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_PICTURES, part.getPartID());
-        cv.put(COLUMN_PICTURES, part.getPhotoPath());
+        cv.put(COLUMN_PART_ID, part.getPartID());
+        cv.put(COLUMN_PICTURE_PATH, part.getPhotoPath());
+        cv.put(COLUMN_PICTURE_NAME, part.getPicName());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_PICTURE, null, cv);
     }
 
     public void attachVideo(Part part){
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_VIDEOS, part.getPartID());
-        cv.put(COLUMN_VIDEOS, part.getVideoPath());
+        cv.put(COLUMN_PART_ID, part.getPartID());
+        cv.put(COLUMN_VIDEO_PATH, part.getVideoPath());
+        cv.put(COLUMN_VIDEO_NAME, part.getVidName());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_VIDEO, null, cv);
     }
@@ -149,6 +151,18 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public PartCursor queryRecent(){
         Cursor wrapped = getReadableDatabase().query(TABLE_SCANNED, null, null,
                 null, null, null, COLUMN_SCAN_TIME + " desc");
+        return new PartCursor(wrapped);
+    }
+
+    public PartCursor queryPictures(String part_id){
+        Cursor wrapped = getReadableDatabase().query(TABLE_PICTURE, null, COLUMN_PART_ID + " = ?",
+                new String[]{part_id}, null, null, null);
+        return new PartCursor(wrapped);
+    }
+
+    public PartCursor queryVideos(String part_id){
+        Cursor wrapped = getReadableDatabase().query(TABLE_VIDEO, null, COLUMN_PART_ID + " = ?",
+                new String[]{part_id}, null, null, null);
         return new PartCursor(wrapped);
     }
 
@@ -203,6 +217,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
             part.setChecklistTask(getString(getColumnIndex(COLUMN_CHECKLIST_TASK)));
             part.setChecklistID(getString(getColumnIndex(COLUMN_CHECKLIST_CHECKLISTID)));
+            return part;
+        }
+
+        public Part getPictures(){
+            if(isBeforeFirst() || isAfterLast()){
+                return null;
+            }
+            Part part = new Part();
+            part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
+            part.setPicName(getString(getColumnIndex(COLUMN_PICTURE_NAME)));
+            part.setPhotoPath(getString(getColumnIndex(COLUMN_PICTURE_PATH)));
+            return part;
+        }
+
+        public Part getVideo(){
+            if(isBeforeFirst() || isAfterLast()){
+                return null;
+            }
+            Part part = new Part();
+            part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
+            part.setVidName(getString(getColumnIndex(COLUMN_VIDEO_NAME)));
+            part.setVideoPath(getString(getColumnIndex(COLUMN_VIDEO_PATH)));
             return part;
         }
 

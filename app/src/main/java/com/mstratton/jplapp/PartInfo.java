@@ -2,38 +2,52 @@ package com.mstratton.jplapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class PartInfo extends Activity {
     int cardIndex;
     String partID;
+    String checklistID;
     String retrievedFrom;
     private ArrayList<View> cardList;
+    ArrayList<String> names;
     CardScrollView csvCardsView;
 
+    // For Database Functionality
     DatabaseHelper mDatabaseHelper;
     Part scannedPart;
 
+    // For Location Functionality
     public LocationListener mLocationListener;
     public Criteria criteria;
     boolean updated = true;
+
+    // For Camera Functionality
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    private Uri fileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +79,31 @@ public class PartInfo extends Activity {
         if (!dataCursor.isAfterLast()) {
             scannedPart = dataCursor.getPart();
         }
+
+        if (scannedPart == null) {
+            // Not Found, return to viewfinder
+            Intent intent = new Intent(PartInfo.this, ViewFinder.class);
+            intent.putExtra("KEY", "NOT_FOUND");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+        // Setup Photos and Media before Card Creation
+        // For loop for photos
+        ArrayList<String> mediaNames = new ArrayList<String>();
+        dataCursor = mDatabaseHelper.queryPictures(partID);
+        dataCursor.moveToFirst();
+        while(!dataCursor.isAfterLast()){
+            scannedPart = dataCursor.getPictures();
+            mediaNames.add(scannedPart.getPicName());
+            dataCursor.moveToNext();
+        }
+        dataCursor.close();
+
+        File file = new File (scannedPart.getPhotoPath());
+        Drawable photo = Drawable.createFromPath(file.getAbsolutePath());
+
+       // Drawable photo = Drawable.createFromPath();
 
 //        dataCursor = mDatabaseHelper.queryChecklist(partID, 0);
 //        dataCursor.moveToFirst();
@@ -131,31 +170,43 @@ public class PartInfo extends Activity {
         View detectCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS)
                 .setText("Found a " + scannedPart.getPartName() + " (" + scannedPart.getPartID() +") part.")
                 .setFootnote("Part Detected!")
-                 //.addImage(R.drawable.intake)
+                 .addImage(photo)
                 .getView();
         cardList.add(detectCard);
 
         View specificationCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS)
                 .setText(scannedPart.getPartSpecs())
                 .setFootnote("Part Specifications")
-                 //.addImage(R.drawable.intake)
+                .addImage(photo)
                 .getView();
         cardList.add(specificationCard);
 
         // For loop for checklists
-        View checklistsCard = new CardBuilder(this, CardBuilder.Layout.MENU)
-                .setText("BROKEN")//scannedPart.getChecklistName())
-                .setFootnote("Part Checklists")
-                 //.addImage(R.drawable.intake)
-                .getView();
-        cardList.add(checklistsCard);
+        names = new ArrayList<String>();
+        dataCursor = mDatabaseHelper.queryChecklists(partID);
+        dataCursor.moveToFirst();
 
-        // For loop for photos
-        View photosCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
-                //Image photo = part.getphoto;
-                .setText("BROKEN") //photo.getName())
+        Part temp = new Part("temp");
+        while(!dataCursor.isAfterLast()){
+            temp = dataCursor.getChecklist();
+            if(!names.contains(temp.getChecklistID())) {
+                names.add(temp.getChecklistID());
+            }
+            dataCursor.moveToNext();
+        }
+
+        for (int i = 0; i < names.size(); i++) {
+            View checklistsCard = new CardBuilder(this, CardBuilder.Layout.MENU)
+                    .setText(names.get(i))
+                    .setFootnote("Part Checklists")
+                    .getView();
+            cardList.add(checklistsCard);
+        }
+
+        View photosCard = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                .setText(mediaNames.get(0))
                 .setFootnote("Part Photos")
-                 //.addImage(R.drawable.intake)
+                .addImage(photo)
                 .getView();
         cardList.add(photosCard);
 
@@ -185,14 +236,14 @@ public class PartInfo extends Activity {
                 cardIndex = position;
 
                 if (position == 0) {
-                    // video
+                    openVideoCamera();
 
                 } else if (position == 1) {
-                    // photo
+                    openPhotoCamera();
 
-                } else if (position == 4) {
+                } else if (position >= 4 && position < (4 + names.size())) {
                     // Start CheckList View
-                    openChecklistView();
+                    openChecklistView(names.get(position - 4));
                 }
             }
         });
@@ -230,12 +281,48 @@ public class PartInfo extends Activity {
         }
     }
 
-    public void openChecklistView () {
+    public void openPhotoCamera () {
+
+        // create Intent to take a picture and return control to the calling application
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File appDir = getApplicationContext().getFilesDir();
+        File photoDir = new File(appDir, "photos");
+        File image = new File(photoDir, "image_001.jpg");
+        Uri fileUri = Uri.fromFile(image);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+        // start the image capture Intent
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+    }
+
+    public void openVideoCamera () {
+
+        //create new Intent
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+        File appDir = getApplicationContext().getFilesDir();
+        File videoDir = new File(appDir, "videos");
+        File video = new File(videoDir, "video_001.mp4");
+        Uri fileUri = Uri.fromFile(video);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+
+        // start the Video Capture Intent
+        startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+
+    }
+
+    public void openChecklistView (String name) {
+        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+        checklistID = name;
 
         // Define CheckList View Class
         Intent myIntent = new Intent(PartInfo.this, CheckList.class);
         // Attach the part info from Part View.
         myIntent.putExtra("KEY", partID);
+        myIntent.putExtra("KEY2", checklistID);
         // Start the CheckList View class
         startActivity(myIntent);
     }
@@ -262,6 +349,16 @@ public class PartInfo extends Activity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS) {
             switch (item.getItemId()) {
+
+// MENU NEEDS GYRO SCROLLING
+//                case R.id.menu_addvideo:
+//                    csvCardsView.setSelection(0);
+//
+//                    break;
+//                case R.id.menu_addphoto:
+//                    csvCardsView.setSelection(1);
+//
+//                    break;
                 case R.id.menu_detail:
                     csvCardsView.setSelection(2);
 
@@ -275,7 +372,6 @@ public class PartInfo extends Activity {
 
                     // Must start Checklists class automatically, since no way
                     // to "select" a card using voice.
-                    openChecklistView();
 
                     break;
                 case R.id.menu_photo:

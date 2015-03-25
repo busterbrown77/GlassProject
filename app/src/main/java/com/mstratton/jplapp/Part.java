@@ -1,11 +1,6 @@
 package com.mstratton.jplapp;
 
 import java.util.ArrayList;
-import java.util.Date;
-
-/**
- * Created by Sam on 2/2/2015.
- */
 
 public class Part {
 
@@ -22,6 +17,8 @@ public class Part {
     private String checklistID;
     private String checklistTask;
     private String partStatus;
+    public String picName;
+    public String vidName;
 
     public String getPartName() {
         return partName;
@@ -127,6 +124,21 @@ public class Part {
         return checklistTask;
     }
 
+    public String getPicName() {
+        return picName;
+    }
+
+    public void setPicName(String picName) {
+        this.picName = picName;
+    }
+
+    public String getVidName() {
+        return vidName;
+    }
+
+    public void setVidName(String vidName) {
+        this.vidName = vidName;
+    }
 
     public Part(String partID){
         this.partID = partID;
