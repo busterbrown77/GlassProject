@@ -19,6 +19,8 @@ public class Part {
     private String partStatus;
     public String picName;
     public String vidName;
+    public String integrationStatus;
+    public String report;
 
     public String getPartName() {
         return partName;
@@ -138,6 +140,22 @@ public class Part {
 
     public void setVidName(String vidName) {
         this.vidName = vidName;
+    }
+
+    public String getIntegrationStatus() {
+        return integrationStatus;
+    }
+
+    public String getReport() {
+        return report;
+    }
+
+    public void setReport(String report) {
+        this.report = report;
+    }
+
+    public void setIntegrationStatus(String integrationStatus) {
+        this.integrationStatus = integrationStatus;
     }
 
     public Part(String partID){

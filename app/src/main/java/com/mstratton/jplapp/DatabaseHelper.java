@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_PART_NAME = "partName";
     private static final String COLUMN_PART_STATUS = "partStatus";
     private static final String COLUMN_CHECKLIST_SIZE = "checklistSize";
+    private static final String COLUMN_INTEGRATION_STATUS = "partIntegration";
 
     private static final String COLUMN_SCAN_LAT = "locationLat";
     private static final String COLUMN_SCAN_LONG = "locationLong";
@@ -39,6 +40,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_CHECKLIST_CHECKLISTID = "checklistID";
     private static final String COLUMN_SPECIAL_ITEMS = "special_items";
 
+    private static final String COLUMN_REPORT = "logReport";
+
 
 
     public DatabaseHelper(Context context){
@@ -53,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + "partDescription TEXT,"
                 + "partSpecs TEXT,"
                 + "partStatus TEXT,"
+                + "partIntegration TEXT,"
                 + "checklistSize INTEGER)");
         db.execSQL("create table checklistPart("
                 + "_id TEXT,"
@@ -76,6 +80,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + "vidPaths TEXT,"
                 + "vidName,"
                 + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
+        db.execSQL("create table specialPart("
+                + "_id TEXT,"
+                + "logReport TEXT,"
+                + "scanTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,"
+                + "FOREIGN KEY(_id) REFERENCES _id(partDB))");
     }
 
     @Override
@@ -90,6 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         cvPartDB.put(COLUMN_PART_NAME, part.getPartName());
         cvPartDB.put(COLUMN_PART_STATUS, part.getPartStatus());
         cvPartDB.put(COLUMN_CHECKLIST_SIZE, part.getChecklistSize());
+        cvPartDB.put(COLUMN_INTEGRATION_STATUS, part.getIntegrationStatus());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_PART, null, cvPartDB);
         insertScanHistory(part);
@@ -114,14 +124,23 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.insert(TABLE_SCANNED, null, cvScannedPart);
     }
 
+    public void insertReport(Part part){
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_PART_ID, part.getPartID());
+        cv.put(COLUMN_REPORT, part.getReport());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(TABLE_SPECIAL, null, cv);
+    }
+
     public long updatePart(Part part){
         String id = part.getPartID();
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PART_ID, part.getPartID());
         cv.put(COLUMN_PART_DESCRIPTION, part.getPartSpecs());
         cv.put(COLUMN_PART_NAME, part.getPartName());
+        cv.put(COLUMN_INTEGRATION_STATUS, part.getIntegrationStatus());
         String[] args = new String[]{id};
-        return getWritableDatabase().update(TABLE_PART, cv, "_id=?", args);
+        return getWritableDatabase().update(TABLE_PART, cv, "partIntegration=?", args);
     }
 
     public void attachPicture(Part part){
@@ -194,6 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             part.setPartName(getString(getColumnIndex(COLUMN_PART_NAME)));
             part.setPartStatus(getString(getColumnIndex(COLUMN_PART_STATUS)));
             part.setChecklistSize(getInt(getColumnIndex(COLUMN_CHECKLIST_SIZE)));
+            part.setIntegrationStatus(getString(getColumnIndex(COLUMN_INTEGRATION_STATUS)));
             return part;
         }
 
@@ -242,7 +262,15 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             return part;
         }
 
-
+        public Part getReport(){
+            if(isBeforeFirst() || isAfterLast()){
+                return null;
+            }
+            Part part = new Part();
+            part.setPartID(getString(getColumnIndex(COLUMN_PART_ID)));
+            part.setReport(getString(getColumnIndex(COLUMN_REPORT)));
+            part.setScannedTime(getString(getColumnIndex(COLUMN_SCAN_TIME)));
+            return part;
+        }
     }
-
 }
