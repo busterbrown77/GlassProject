@@ -65,11 +65,6 @@
             android:enabled="true" >
         </activity>
 
-        <activity
-            android:name=".DatabaseMaker"
-            android:enabled="true" >
-        </activity>
-
         <service
             android:name=".Service"
             android:enabled="true"

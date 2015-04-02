@@ -172,6 +172,7 @@ public class SplashScreen extends Activity {
         newPart.setPartName("Actuator");
         newPart.setChecklistSize(1);
         newPart.setChecklistTask("Connect Socket");
+        newPart.setIntegrationStatus("Bisexual");
 
         mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
         newPart.setChecklistTask("Turn Handle");
@@ -216,10 +217,17 @@ public class SplashScreen extends Activity {
         newPart.setChecklistTask("WHO DAT!!!");
         mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist1");
 
-        newPart.setVideoPath(getApplicationContext().getFilesDir() + "/videos/awesomesauce.mp4");
-        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/6PKW2Al.jpg");
-        newPart.setPicName("AHAHAHHANO");
-        newPart.setVidName("AWESOME");
+        //newPart.setVideoPath(getApplicationContext().getFilesDir() + "/videos/awesomesauce.mp4");
+        //newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/6PKW2Al.jpg");
+        newPart.setPhotoPath("/data/media/0/DCIM/Camera/test.jpg");
+        newPart.setPicName("/data/media/0/DCIM/Camera/test.jpg");
+        mDatabaseHelper.attachPicture(newPart);
+
+        newPart.setPhotoPath("/data/media/0/DCIM/Camera/test2.jpg");
+        newPart.setPicName("/data/media/0/DCIM/Camera/test2.jpg");
+
+        //newPart.setPicName("AHAHAHHANO");
+        //newPart.setVidName("AWESOME");
 
         mDatabaseHelper.insertPart(newPart);
         mDatabaseHelper.attachPicture(newPart);
