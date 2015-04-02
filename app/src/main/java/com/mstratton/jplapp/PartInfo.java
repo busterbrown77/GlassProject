@@ -10,7 +10,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -103,9 +102,12 @@ public class PartInfo extends Activity {
         }
         dataCursor.close();
 
-        File f = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "DCIM/Camera/DERP.jpg");
+        //File f = new File(Environment.getExternalStorageDirectory()
+        //       + File.separator + "DCIM/Camera/TrollFace.jpg");
 
+        File f = new File("data/data/com.mstratton.jplapp/files/photos/gen.png");
+
+        //File f = new File(scannedPart.getPhotoPath());
         Drawable photo = Drawable.createFromPath(f.getAbsolutePath());
         Resources res = getResources();
 
@@ -207,30 +209,15 @@ public class PartInfo extends Activity {
             cardList.add(checklistsCard);
         }
 
-        // For loop for photos
-        photonames = new ArrayList<String>();
-        dataCursor = mDatabaseHelper.queryPictures(partID);
-        dataCursor.moveToFirst();
+        // Add loop for photos
+        View photosCard = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                .setText(scannedPart.getPicName())
+                .setFootnote("Part Photos")
+                .addImage(photo)
+                .getView();
+        cardList.add(photosCard);
 
-        Part temp2 = new Part("temp");
-        while(!dataCursor.isAfterLast()){
-            temp = dataCursor.getPictures();
-            if(!photonames.contains(temp2.getPicName())) {
-                photonames.add(temp2.getPicName());
-            }
-            dataCursor.moveToNext();
-        }
-
-        for (int i = 0; i < photonames.size(); i++) {
-            View photosCard = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                    .setText(photonames.get(i))
-                    .setFootnote("Part Photos")
-                    .addImage(photo)
-                    .getView();
-            cardList.add(photosCard);
-        }
-
-        // For loop for videos
+        // Add loop for videos
         View videosCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
                 .setText("BROKEN")//scannedPart.getChecklist())
                 .setFootnote("Part Videos")

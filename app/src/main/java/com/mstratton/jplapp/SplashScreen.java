@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,14 +220,11 @@ public class SplashScreen extends Activity {
 
         //newPart.setVideoPath(getApplicationContext().getFilesDir() + "/videos/awesomesauce.mp4");
         //newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/6PKW2Al.jpg");
-        newPart.setPhotoPath("/data/media/0/DCIM/Camera/test.jpg");
-        newPart.setPicName("/data/media/0/DCIM/Camera/test.jpg");
-        mDatabaseHelper.attachPicture(newPart);
 
-        newPart.setPhotoPath("/data/media/0/DCIM/Camera/test2.jpg");
-        newPart.setPicName("/data/media/0/DCIM/Camera/test2.jpg");
+        newPart.setPhotoPath(Environment.getExternalStorageDirectory()
+                + File.separator + "DCIM/Camera/TrollFace.jpg");
+        newPart.setPicName("AHAHAHHANO");
 
-        //newPart.setPicName("AHAHAHHANO");
         //newPart.setVidName("AWESOME");
 
         mDatabaseHelper.insertPart(newPart);
