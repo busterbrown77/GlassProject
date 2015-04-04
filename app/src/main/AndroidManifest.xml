@@ -65,6 +65,11 @@
             android:enabled="true" >
         </activity>
 
+        <activity
+            android:name=".IntegrationStatus"
+            android:enabled="true" >
+        </activity>
+
         <service
             android:name=".Service"
             android:enabled="true"

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,10 +109,6 @@ public class SplashScreen extends Activity {
             if( !photoDir.exists() )
                 photoDir.mkdir();
 
-            File videoDir = new File(appDir, "videos");
-            if( !videoDir.exists() )
-                videoDir.mkdir();
-
             // Write App Info File
             File outFile3 = new File(appDir, "info.txt");
 
@@ -128,7 +123,7 @@ public class SplashScreen extends Activity {
                 return false;
             }
 
-            //Generate Initial Database Data
+            //Generate Test Database Data
             TestData();
 
             return true;
@@ -164,8 +159,8 @@ public class SplashScreen extends Activity {
         Part newPart = new Part("TEMP");
 
         //Part1
+        newPart.setIntegrationStatus("None");
         newPart.setPartID("2119w078");
-        newPart.setPartStatus("Connected");
         newPart.setPartSpecs("Width: 15 inches" +
                 "Length: 30 inches" +
                 "MaxTemp: 100F" +
@@ -173,7 +168,6 @@ public class SplashScreen extends Activity {
         newPart.setPartName("Actuator");
         newPart.setChecklistSize(1);
         newPart.setChecklistTask("Connect Socket");
-        newPart.setIntegrationStatus("Bisexual");
 
         mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
         newPart.setChecklistTask("Turn Handle");
@@ -183,22 +177,25 @@ public class SplashScreen extends Activity {
         newPart.setChecklistTask("Collect Paycheck");
         mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
         //newPart.setVideoPath();
-        //newPart.setPhotoPath();
+        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/wrench.png");
 
         mDatabaseHelper.insertPart(newPart);
-        //mDatabaseHelper.attachPicture(newPart);
+        mDatabaseHelper.attachPicture(newPart);
         //mDatabaseHelper.attachPicture(newPart);
 
 
         //Part2
+
+
+
+
         newPart.setPartID("2119w080");
-        newPart.setPartStatus("Destroyed");
-        newPart.setPartSpecs("Really giant" +
-                "Really round" +
-                "Also very square" +
-                "Running out of ideas");
+        newPart.setPartSpecs("Really giant\n" +
+                             "Really round\n" +
+                             "Also very square\n" +
+                             "Running out of ideas\n");
         newPart.setPartName("Backpack");
-        newPart.setChecklistSize(2);
+        newPart.setChecklistSize(1);
         newPart.setChecklistTask("Zip Backpack");
 
 
@@ -210,32 +207,28 @@ public class SplashScreen extends Activity {
         newPart.setChecklistTask("Help Me");
         mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
         newPart.setChecklistTask("Don't do anything");
-        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist1");
-        newPart.setChecklistTask("second checklist works");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist1");
-        newPart.setChecklistTask("YAY");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist1");
-        newPart.setChecklistTask("WHO DAT!!!");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist1");
+//        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist1");
+//        newPart.setChecklistTask("second checklist works");
+//        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist1");
+//        newPart.setChecklistTask("YAY");
+//        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist1");
+//        newPart.setChecklistTask("WHO DAT!!!");
+//        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist1");
 
-        //newPart.setVideoPath(getApplicationContext().getFilesDir() + "/videos/awesomesauce.mp4");
-        //newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/6PKW2Al.jpg");
+        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/jpllogo.jpg");
+        newPart.setPicName("Logo");
+        mDatabaseHelper.attachPicture(newPart);
 
-        newPart.setPhotoPath(Environment.getExternalStorageDirectory()
-                + File.separator + "DCIM/Camera/TrollFace.jpg");
-        newPart.setPicName("AHAHAHHANO");
-
-        //newPart.setVidName("AWESOME");
+        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/nasa.jpg");
+        newPart.setPicName("Nasa");
+        mDatabaseHelper.attachPicture(newPart);
 
         mDatabaseHelper.insertPart(newPart);
-        mDatabaseHelper.attachPicture(newPart);
-        mDatabaseHelper.attachVideo(newPart);
 
 
         //Part3
         newPart.setPartID("2119w990");
-        newPart.setPartStatus("Platinum");
-        newPart.setPartSpecs("SPEC SPEC SPEC SPEC SPEC test");
+        newPart.setPartSpecs("SPEC\nSPEC\nSPEC\nSPEC\nSPEC\ntest");
         newPart.setPartName("GLASSES");
         newPart.setChecklistSize(1);
         newPart.setChecklistTask("part 3 task 1");
@@ -256,7 +249,6 @@ public class SplashScreen extends Activity {
 
         //Part4
         newPart.setPartID("2119w995");
-        newPart.setPartStatus("Unobtainium");
         newPart.setPartSpecs("SPE test");
         newPart.setPartName("FGDSLKRNFG");
         newPart.setChecklistSize(1);
@@ -269,14 +261,13 @@ public class SplashScreen extends Activity {
         mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
         newPart.setChecklistTask("You heard that new Fetty WAP?!?");
         mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
+        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/shuttle.png");
+        newPart.setPicName("Shuttle");
 
-        //newPart.setVideoPath();
-        //newPart.setPhotoPath();
-
+        mDatabaseHelper.attachPicture(newPart);
         mDatabaseHelper.insertPart(newPart);
         mDatabaseHelper.close();
     }
-
 
 }
 

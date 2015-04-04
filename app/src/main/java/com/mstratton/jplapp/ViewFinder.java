@@ -1,7 +1,6 @@
 package com.mstratton.jplapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -10,15 +9,11 @@ import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.glass.touchpad.Gesture;
-import com.google.android.glass.touchpad.GestureDetector;
 
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
@@ -34,9 +29,6 @@ public class ViewFinder extends Activity {
     // For Menu
     private boolean mAttachedToWindow;
     private boolean mOptionsMenuOpen;
-
-    // Define gesture detector
-    private GestureDetector mGestureDetector;
 
     // For QR Scanner
     String partID;
@@ -97,9 +89,6 @@ public class ViewFinder extends Activity {
         mPreview = new CameraLib(this, mCamera, previewCb, autoFocusCB);
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
-
-        /* Start Gesture Detector */
-        mGestureDetector = createGestureDetector(this);
     }
 
     public void onPause() {
@@ -191,106 +180,5 @@ public class ViewFinder extends Activity {
             autoFocusHandler.postDelayed(doAutoFocus, 1000);
         }
     };
-
-    // Gesture Detection Code ----------------------------------------------------------------------
-
-    private GestureDetector createGestureDetector(Context context) {
-        GestureDetector gestureDetector = new GestureDetector(context);
-
-        //Create a base listener for generic gestures
-        gestureDetector.setBaseListener(new GestureDetector.BaseListener() {
-            @Override
-            public boolean onGesture(Gesture gesture) {
-                if (gesture == Gesture.TAP) {
-                    openOptionsMenu();
-                    //Toast.makeText(getApplicationContext(), "Tap", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_TAP) {
-                    Toast.makeText(getApplicationContext(), "Two Tap", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.SWIPE_RIGHT) {
-                    Toast.makeText(getApplicationContext(), "Swipe Right", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.SWIPE_LEFT) {
-                    Toast.makeText(getApplicationContext(), "Swipe Left", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.LONG_PRESS) {
-                    Toast.makeText(getApplicationContext(), "Long Press", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.SWIPE_DOWN) {
-                    Toast.makeText(getApplicationContext(), "Swipe Down", Toast.LENGTH_SHORT).show();
-                    // Appears to be intercepted by CameraPreview. Nothing here works.
-
-                    return false;
-                } else if (gesture == Gesture.SWIPE_UP) {
-                    Toast.makeText(getApplicationContext(), "Swipe up", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.THREE_LONG_PRESS) {
-                    Toast.makeText(getApplicationContext(), "Three Long Press", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.THREE_TAP) {
-                    Toast.makeText(getApplicationContext(), "Three Tap", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_LONG_PRESS) {
-                    Toast.makeText(getApplicationContext(), "Two Long Press", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_SWIPE_DOWN) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe Down", Toast.LENGTH_SHORT).show();
-                    // Appears to be intercepted by CameraPreview. Nothing here works.
-
-                    return false;
-                } else if (gesture == Gesture.TWO_SWIPE_LEFT) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe Left", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_SWIPE_RIGHT) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe Right", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                } else if (gesture == Gesture.TWO_SWIPE_UP) {
-                    Toast.makeText(getApplicationContext(), "Two Swipe up", Toast.LENGTH_SHORT).show();
-
-                    return true;
-                }
-
-                return false;
-            }
-        });
-        return gestureDetector;
-    }
-
-    /*
-     * Send generic motion events to the gesture detector
-     */
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        if (mGestureDetector != null) {
-            return mGestureDetector.onMotionEvent(event);
-        }
-        return false;
-    }
-
-    public void debugParts(){
-
-    }
-
-//    Weird, using this causes app to be locked on. No gestures, must exit through menu.
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-//            super.openOptionsMenu();
-//            return true;
-//        }
-//        return false;
-//    }
 
 }

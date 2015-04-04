@@ -36,8 +36,6 @@ public class CheckList extends Activity {
             checklistID = extras.getString("KEY2");
         }
 
-        // Get Info from database using the code from QR Scanner.
-
         // Fill Array with saved part IDs from past scans...
         ArrayList<String> recentParts = new ArrayList<String>();
         mDatabaseHelper = new DatabaseHelper(this);
@@ -72,6 +70,7 @@ public class CheckList extends Activity {
                     .setText(steps.get(i))
                     .getView();
             cardList.add(tempView);
+
         }
 
         csvCardsView = new CardScrollView(this);

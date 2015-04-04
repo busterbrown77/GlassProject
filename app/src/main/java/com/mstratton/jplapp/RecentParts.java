@@ -2,9 +2,8 @@ package com.mstratton.jplapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -52,23 +51,43 @@ public class RecentParts extends Activity {
             dataCursor = mDatabaseHelper.queryPart(recentParts.get(i));
             dataCursor.moveToFirst();
             Part part = dataCursor.getPart();
-
             partList.add(part);
             dataCursor.moveToNext();
+        }
 
-            // DEAL WITH LESS THAN RECENTAMOUNT
+        ArrayList<Drawable> pics = new ArrayList<Drawable>();
+        for (int i = 0; i < recentParts.size(); i++) {
+            dataCursor = mDatabaseHelper.queryPictures(recentParts.get(i));
+            dataCursor.moveToFirst();
+            Part part = dataCursor.getPictures();
+            if(part != null) {
+                Drawable drawtemp = Drawable.createFromPath(part.getPhotoPath());
+                pics.add(drawtemp);
+            }else{
+                pics.add(null);
+            }
+            dataCursor.moveToNext();
         }
 
         // Create cards using part information.
         cardList = new ArrayList<View>();
-        for (int i = 0; i < partList.size(); i++) {
-
-            View view = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                    .setText(partList.get(i).getPartID())
-                            //.addImage()
-                    .setFootnote("Recently Scanned")
-                    .setTimestamp("Today")//partList.get(i).getScannedTime().toString())
-                    .getView();
+        for (int i = 0; i < recentParts.size(); i++) {
+            View view;
+            if(pics.get(i) != null) {
+                view = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                        .setText(partList.get(i).getPartID())
+                        .setFootnote("Recently Scanned")
+                        .setTimestamp("Today")
+                        .addImage(pics.get(i))
+                        .getView();
+            }else{
+                view = new CardBuilder(this, CardBuilder.Layout.CAPTION)
+                        .setText(partList.get(i).getPartID())
+                        .setFootnote("Recently Scanned")
+                        .setTimestamp("Today")
+                        .addImage(R.drawable.wrench)
+                        .getView();
+            }
             cardList.add(view);
         }
 
@@ -139,54 +158,6 @@ public class RecentParts extends Activity {
         myIntent.putExtra("RETRIEVED_FROM", "recentparts");
         // Start the Part View class
         startActivity(myIntent);
-    }
-
-    // For Contextual Voice Commands --------------------------------------------------------
-
-    @Override
-    public boolean onCreatePanelMenu(int featureId, Menu menu) {
-        if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS) {
-            getMenuInflater().inflate(R.menu.recentparts
-                    , menu);
-            return true;
-        }
-        // Pass through to super to setup touch menu.
-        return super.onCreatePanelMenu(featureId, menu);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.recentparts, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS) {
-            switch (item.getItemId()) {
-                case R.id.menu_select:
-                    openPartView();
-
-                    break;
-                case R.id.menu_next:
-                    csvCardsView.setSelection(csvCardsView.getSelectedItemPosition() + 1);
-
-                    break;
-                case R.id.menu_prev:
-                    csvCardsView.setSelection(csvCardsView.getSelectedItemPosition() - 1);
-
-                    break;
-                case R.id.menu_back:
-                    finish();
-
-                    break;
-                default:
-                    return true;
-            }
-            return true;
-        }
-        // Good practice to pass through to super if not handled
-        return super.onMenuItemSelected(featureId, item);
     }
 
 }

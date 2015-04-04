@@ -6,14 +6,13 @@
     <string name="start_command">Part Assistant</string>
 
     <string name="viewfinder">Scan a Part</string>
-    <string name="recentparts">Open Recent Parts</string>
+    <string name="recentparts">Recent Parts</string>
     <string name="manual">Voice Search</string>
 
     <string name="viewfinder_hint">Line Up the Reticule to Scan A QR Code or Barcode</string>
 
     <string name="detail">Detail</string>
     <string name="video">Videos</string>
-    <string name="addvideo">Add Video</string>
     <string name="photo">Photos</string>
     <string name="addphoto">Add Photo</string>
     <string name="checklist">Checklists</string>
@@ -25,5 +24,4 @@
     <string name="prev">Previous</string>
     <string name="back">Back</string>
     <string name="exit">Exit</string>
-
 </resources>
