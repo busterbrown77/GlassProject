@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.LocationListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -14,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -151,16 +150,32 @@ public class PartInfo extends Activity {
         ArrayList<String> reports = new ArrayList<String>();
         dataCursor = mDatabaseHelper.queryReports(partID);
         dataCursor.moveToFirst();
-        while(!dataCursor.isAfterLast()){
-            scannedPart = dataCursor.getPictures();
-            reports.add(scannedPart.getReport());
-            dataCursor.moveToNext();
+        for (int i = 0; i < 5; i++) {
+            if (!dataCursor.isAfterLast()) {
+                scannedPart = dataCursor.getReport();
+                reports.add(scannedPart.getReport());
+                dataCursor.moveToNext();
+            } else {
+                reports.add(" ");
+            }
         }
         dataCursor.close();
+
 
         View historyCard = new CardBuilder(this, CardBuilder.Layout.EMBED_INSIDE)
                 .setEmbeddedLayout(R.layout.table)
                 .getView();
+
+        TextView row1 = (TextView) historyCard.findViewById(R.id.row1);
+        row1.setText(reports.get(0));
+        TextView row2 = (TextView) historyCard.findViewById(R.id.row2);
+        row2.setText(reports.get(1));
+        TextView row3 = (TextView) historyCard.findViewById(R.id.row3);
+        row3.setText(reports.get(2));
+        TextView row4 = (TextView) historyCard.findViewById(R.id.row4);
+        row4.setText(reports.get(3));
+        TextView row5 = (TextView) historyCard.findViewById(R.id.row5);
+        row5.setText(reports.get(4));
 
         cardList.add(historyCard);
 
@@ -226,16 +241,19 @@ public class PartInfo extends Activity {
 
         File appDir = getApplicationContext().getFilesDir();
         File photoDir = new File(appDir, "photos");
+
         File image = new File(photoDir, "image_001.jpg");
-        Uri fileUri = Uri.fromFile(image);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, "derp.jpg");
 
         // start the image capture Intent
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
     }
 
     public void openChecklistView (String name) {
-        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+
         checklistID = name;
 
         // Define CheckList View Class

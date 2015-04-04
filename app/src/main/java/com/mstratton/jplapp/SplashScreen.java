@@ -225,6 +225,16 @@ public class SplashScreen extends Activity {
 
         mDatabaseHelper.insertPart(newPart);
 
+        newPart.setReport("Broken Pins");
+        mDatabaseHelper.insertReport(newPart);
+        newPart.setReport("Water Damage");
+        mDatabaseHelper.insertReport(newPart);
+        newPart.setReport("Overheated");
+        mDatabaseHelper.insertReport(newPart);
+        newPart.setReport("Cracked Motherboard");
+        mDatabaseHelper.insertReport(newPart);
+        newPart.setReport("Missing cable");
+        mDatabaseHelper.insertReport(newPart);
 
         //Part3
         newPart.setPartID("2119w990");
@@ -245,6 +255,10 @@ public class SplashScreen extends Activity {
         //newPart.setPhotoPath();
 
         mDatabaseHelper.insertPart(newPart);
+        newPart.setReport("Fire");
+        mDatabaseHelper.insertReport(newPart);
+        newPart.setReport("Dropped");
+        mDatabaseHelper.insertReport(newPart);
 
 
         //Part4

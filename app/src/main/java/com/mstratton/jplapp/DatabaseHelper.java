@@ -16,6 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String TABLE_CHECKLIST = "checklistPart";
     private static final String TABLE_SPECIAL = "specialPart";
     private static final String TABLE_PICTURE = "picturePart";
+    private static final String TABLE_VIDEO = "videoPart";
     private static final String TABLE_SCANNED = "scannedPart";
 
     private static final String COLUMN_PART_ID = "_id";
@@ -173,7 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public PartCursor queryReports(String part_id){
         Cursor wrapped = getReadableDatabase().query(TABLE_SPECIAL, null,
                 COLUMN_PART_ID + " = ?",
-                new String[]{part_id}, null, null, null, null);
+                new String[]{part_id}, null, null,  COLUMN_SCAN_TIME + " desc",null);
         return new PartCursor(wrapped);
     }
 
