@@ -93,7 +93,7 @@ public class PartInfo extends Activity {
         cardList.add(integrationCard);
 
         View detectCard = new CardBuilder(this, CardBuilder.Layout.COLUMNS_FIXED)
-                .setText("Found a " + scannedPart.getPartName() + " (" + scannedPart.getPartID() +") part.\n\n" + "Integration Status: " + scannedPart.getIntegrationStatus())
+                .setText(scannedPart.getPartName() + " (" + scannedPart.getPartID() +")\n\n" + "Integration Status: " + scannedPart.getIntegrationStatus())
                 .addImage(R.drawable.wrench)
                 .getView();
         cardList.add(detectCard);

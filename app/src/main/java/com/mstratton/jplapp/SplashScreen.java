@@ -161,26 +161,30 @@ public class SplashScreen extends Activity {
         //Part1
         newPart.setIntegrationStatus("None");
         newPart.setPartID("2119w078");
-        newPart.setPartSpecs("Width: 15 inches" +
-                "Length: 30 inches" +
-                "MaxTemp: 100F" +
-                "Material: Sammium");
-        newPart.setPartName("Actuator");
+        newPart.setPartSpecs("2'x2'x2'\n" +
+                "ASME Bot\n" +
+                "Green tracks\n" +
+                "Material: Plastic");
+        newPart.setPartName("Access Panel");
         newPart.setChecklistSize(1);
-        newPart.setChecklistTask("Connect Socket");
+        newPart.setChecklistTask("Remove 2 screws from top");
 
-        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
-        newPart.setChecklistTask("Turn Handle");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
-        newPart.setChecklistTask("Admire Work");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
-        newPart.setChecklistTask("Collect Paycheck");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "ASME Remove Chip");
+        newPart.setChecklistTask("Lift top");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "ASME Remove Chip");
+        newPart.setChecklistTask("Remove broken wireless chip and replace with new chip");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "ASME Remove Chip");
+        newPart.setChecklistTask("Replace top and screw in screws");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "ASME Remove Chip");
         //newPart.setVideoPath();
-        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/wrench.png");
+
+        newPart.setReport("Broken Pins");
+        mDatabaseHelper.insertReport(newPart);
+        newPart.setReport("Water Damage");
+        mDatabaseHelper.insertReport(newPart);
 
         mDatabaseHelper.insertPart(newPart);
-        mDatabaseHelper.attachPicture(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
         //mDatabaseHelper.attachPicture(newPart);
 
 
@@ -190,38 +194,38 @@ public class SplashScreen extends Activity {
 
 
         newPart.setPartID("2119w080");
-        newPart.setPartSpecs("Really giant\n" +
-                             "Really round\n" +
-                             "Also very square\n" +
-                             "Running out of ideas\n");
-        newPart.setPartName("Backpack");
+        newPart.setPartSpecs("Desktop\n" +
+                             "Color: black\n" +
+                             "Very square\n" +
+                             "FIT Lab\n");
+        newPart.setPartName("Computer");
         newPart.setChecklistSize(1);
-        newPart.setChecklistTask("Zip Backpack");
+        newPart.setChecklistTask("Pull on latch and release side cover");
 
 
-        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist");
-        newPart.setChecklistTask("Walk Around");
-        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
-        newPart.setChecklistTask("Look Cool");
-        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
-        newPart.setChecklistTask("Help Me");
-        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
-        newPart.setChecklistTask("Don't do anything");
-//        mDatabaseHelper.insertChecklistTask(newPart, 0, "Some Checklist1");
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Remove RAM");
+        newPart.setChecklistTask("Remove side covering");
+        mDatabaseHelper.insertChecklistTask(newPart, 1, "Remove RAM");
+        newPart.setChecklistTask("Locate RAM inside the case and release side latches");
+        mDatabaseHelper.insertChecklistTask(newPart, 2, "Remove RAM");
+        newPart.setChecklistTask("Remove RAM and replace with new RAM");
+        mDatabaseHelper.insertChecklistTask(newPart, 3, "Remove RAM");
+        newPart.setChecklistTask("Close case");
+        mDatabaseHelper.insertChecklistTask(newPart, 0, "Remove RAM");
 //        newPart.setChecklistTask("second checklist works");
 //        mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist1");
 //        newPart.setChecklistTask("YAY");
 //        mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist1");
-//        newPart.setChecklistTask("WHO DAT!!!");
+//        newPart.setChecklistTask("Complete");
 //        mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist1");
 
-        newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/jpllogo.jpg");
-        newPart.setPicName("Logo");
-        mDatabaseHelper.attachPicture(newPart);
+        //newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/jpllogo.jpg");
+        //newPart.setPicName("Logo");
+        //mDatabaseHelper.attachPicture(newPart);
 
         newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/nasa.jpg");
         newPart.setPicName("Nasa");
-        mDatabaseHelper.attachPicture(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
 
         mDatabaseHelper.insertPart(newPart);
 
@@ -248,7 +252,7 @@ public class SplashScreen extends Activity {
         mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
         newPart.setChecklistTask("part 3 task 3");
         mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
-        newPart.setChecklistTask("You heard that new Fetty WAP?!?");
+        newPart.setChecklistTask("Task?");
         mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
 
         //newPart.setVideoPath();
@@ -273,12 +277,12 @@ public class SplashScreen extends Activity {
         mDatabaseHelper.insertChecklistTask(newPart, 1, "Some Checklist");
         newPart.setChecklistTask("part 3 task 3");
         mDatabaseHelper.insertChecklistTask(newPart, 2, "Some Checklist");
-        newPart.setChecklistTask("You heard that new Fetty WAP?!?");
+        newPart.setChecklistTask("Turn");
         mDatabaseHelper.insertChecklistTask(newPart, 3, "Some Checklist");
         newPart.setPhotoPath(getApplicationContext().getFilesDir() + "/photos/shuttle.png");
         newPart.setPicName("Shuttle");
 
-        mDatabaseHelper.attachPicture(newPart);
+        //mDatabaseHelper.attachPicture(newPart);
         mDatabaseHelper.insertPart(newPart);
         mDatabaseHelper.close();
     }
