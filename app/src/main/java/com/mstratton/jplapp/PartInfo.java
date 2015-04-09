@@ -1,7 +1,9 @@
 package com.mstratton.jplapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.LocationListener;
@@ -24,7 +26,10 @@ import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+import java.io.Console;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -197,7 +202,8 @@ public class PartInfo extends Activity {
                 cardIndex = position;
 
                 if (position == 0) {
-                    openPhotoCamera();
+                    //openPhotoCamera();
+                    takePhoto();
 
                 } else if (position == 1) {
                     openIntegrationStatus();
@@ -242,44 +248,62 @@ public class PartInfo extends Activity {
         }
     }
 
-    public void openPhotoCamera () {
-        // create Intent to take a picture and return control to the calling application
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri temp = getImageFileUri();
+    private static final int TAKE_PHOTO_CODE = 1;
 
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, temp); // set the image file name
-
-        // start the image capture Intent
-        startActivityForResult(intent, 1001);
+    private void takePhoto(){
+        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(this)) );
+        startActivityForResult(intent, TAKE_PHOTO_CODE);
     }
 
-    private Uri getImageFileUri(){
-
-        // Create a storage directory for the images
-        // To be safe(er), you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this
-
-        File imagePath = new File(getApplicationContext().getFilesDir() + "/photos/", "Tuxuri");
-        Log.d("JPLAPP","Find "+imagePath.getAbsolutePath());
-
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File image = new File(imagePath,"JPL_"+ timeStamp + ".jpg");
-
-        if(!image.exists()){
-            try {
-                image.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+    private File getTempFile(Context context){
+        //it will return /sdcard/image.tmp
+        final File path = new File( Environment.getExternalStorageDirectory(), context.getPackageName() );
+        if(!path.exists()){
+            path.mkdir();
         }
-
-        //return image;
-
-        // Create an File Uri
-        return Uri.fromFile(image);
+        return new File(path, "image.tmp");
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == RESULT_OK) {
+//            switch(requestCode){
+//                case TAKE_PHOTO_CODE:
+                    final File file = getTempFile(this);
+                    try {
+
+                        // Instantiate the Database
+                        mDatabaseHelper = new DatabaseHelper(this);
+                        DatabaseHelper.PartCursor dataCursor;
+
+                        dataCursor = mDatabaseHelper.queryPart(partID);
+                        dataCursor.moveToFirst();
+                        if (!dataCursor.isAfterLast()) {
+                            scannedPart = dataCursor.getPart();
+                        }
+
+                        Bitmap captureBmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
+                        //FileOutputStream os = new FileOutputStream(file);
+                        //captureBmp.compress(Bitmap.CompressFormat.JPEG, 60, os);
+Console.log();
+                        scannedPart.setPhotoPath(file.getAbsolutePath());
+                        scannedPart.setPicName("Taken with Glass");
+                        mDatabaseHelper.attachPicture(scannedPart);
+                        mDatabaseHelper.updatePart(scannedPart);
+                        mDatabaseHelper.close();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+//                    break;
+//            }
+//        }
+    }
+
+
 
     public void openChecklistView (String name) {
 
