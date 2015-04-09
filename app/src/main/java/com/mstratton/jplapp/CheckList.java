@@ -66,8 +66,8 @@ public class CheckList extends Activity {
         cardList = new ArrayList<View>();
         for (int i = 0; i < steps.size(); i++) {
 
-            View tempView = new CardBuilder(this, CardBuilder.Layout.TEXT)
-                    .setText(steps.get(i))
+            View tempView = new CardBuilder(this, CardBuilder.Layout.TEXT_FIXED)
+                    .setText("\n\n" + steps.get(i))
                     .getView();
             cardList.add(tempView);
 

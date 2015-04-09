@@ -7,7 +7,15 @@
     >
 
     <TextView
-        android:id="@+id/row2"
+        android:id="@+id/row0"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text = "Problem Reports:\n"
+        android:textSize="22dp"
+        />
+
+    <TextView
+        android:id="@+id/row1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text = "derp"
@@ -15,7 +23,7 @@
         />
 
     <TextView
-        android:id="@+id/row1"
+        android:id="@+id/row2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text = "derp"
@@ -32,14 +40,6 @@
 
     <TextView
         android:id="@+id/row4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text = "derp"
-        android:textSize="22dp"
-        />
-
-    <TextView
-        android:id="@+id/row5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text = "derp"

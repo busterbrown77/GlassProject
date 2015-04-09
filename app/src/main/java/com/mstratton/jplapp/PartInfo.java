@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.glass.view.WindowUtils;
 import com.google.android.glass.widget.CardBuilder;
@@ -21,7 +25,10 @@ import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PartInfo extends Activity {
     int cardIndex;
@@ -29,7 +36,9 @@ public class PartInfo extends Activity {
     String checklistID;
     String retrievedFrom;
     private ArrayList<View> cardList;
-    ArrayList<String> names;
+    ArrayList<String> checklistNames;
+    ArrayList<String> photoNames;
+    ArrayList<Drawable> drawables;
     CardScrollView csvCardsView;
 
     // For Database Functionality
@@ -99,35 +108,35 @@ public class PartInfo extends Activity {
         cardList.add(detectCard);
 
         View specificationCard = new CardBuilder(this, CardBuilder.Layout.TEXT_FIXED)
-                .setText("Specifications\n\n" + scannedPart.getPartSpecs())
+                .setText("Specifications:\n\n" + scannedPart.getPartSpecs())
                 .getView();
         cardList.add(specificationCard);
 
         // For loop for checklists
-        names = new ArrayList<String>();
+        checklistNames = new ArrayList<String>();
         dataCursor = mDatabaseHelper.queryChecklists(partID);
         dataCursor.moveToFirst();
 
         Part temp = new Part("temp");
         while(!dataCursor.isAfterLast()){
             temp = dataCursor.getChecklist();
-            if(!names.contains(temp.getChecklistID())) {
-                names.add(temp.getChecklistID());
+            if(!checklistNames.contains(temp.getChecklistID())) {
+                checklistNames.add(temp.getChecklistID());
             }
             dataCursor.moveToNext();
         }
 
-        for (int i = 0; i < names.size(); i++) {
+        for (int i = 0; i < checklistNames.size(); i++) {
             View checklistsCard = new CardBuilder(this, CardBuilder.Layout.MENU)
-                    .setText(names.get(i))
+                    .setText(checklistNames.get(i))
                     .getView();
             cardList.add(checklistsCard);
         }
 
         // Setup Photos and Media before Card Creation
         // For loop for photos
-        ArrayList<String> photoNames = new ArrayList<String>();
-        ArrayList<Drawable> drawables = new ArrayList<Drawable>();
+        photoNames = new ArrayList<String>();
+        drawables = new ArrayList<Drawable>();
         dataCursor = mDatabaseHelper.queryPictures(partID);
         dataCursor.moveToFirst();
         while(!dataCursor.isAfterLast()){
@@ -141,7 +150,7 @@ public class PartInfo extends Activity {
         // Add loop for photos
         for(int i = 0; i < drawables.size(); i++) {
             View photosCard = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                    .setText(photoNames.get(i))
+                    .setFootnote(photoNames.get(i))
                     .addImage(drawables.get(i))
                     .getView();
             cardList.add(photosCard);
@@ -174,8 +183,6 @@ public class PartInfo extends Activity {
         row3.setText(reports.get(2));
         TextView row4 = (TextView) historyCard.findViewById(R.id.row4);
         row4.setText(reports.get(3));
-        TextView row5 = (TextView) historyCard.findViewById(R.id.row5);
-        row5.setText(reports.get(4));
 
         cardList.add(historyCard);
 
@@ -195,9 +202,9 @@ public class PartInfo extends Activity {
                 } else if (position == 1) {
                     openIntegrationStatus();
 
-                } else if (position >= 4 && position < (4 + names.size())) {
+                } else if (position >= 4 && position < (4 + checklistNames.size())) {
                     // Start CheckList View
-                    openChecklistView(names.get(position - 4));
+                    openChecklistView(checklistNames.get(position - 4));
                 }
             }
         });
@@ -238,18 +245,40 @@ public class PartInfo extends Activity {
     public void openPhotoCamera () {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Uri temp = getImageFileUri();
 
-        File appDir = getApplicationContext().getFilesDir();
-        File photoDir = new File(appDir, "photos");
-
-        File image = new File(photoDir, "image_001.jpg");
-
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, "derp.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, temp); // set the image file name
 
         // start the image capture Intent
-        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(intent, 1001);
+    }
 
+    private Uri getImageFileUri(){
+
+        // Create a storage directory for the images
+        // To be safe(er), you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this
+
+        File imagePath = new File(getApplicationContext().getFilesDir() + "/photos/", "Tuxuri");
+        Log.d("JPLAPP","Find "+imagePath.getAbsolutePath());
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File image = new File(imagePath,"JPL_"+ timeStamp + ".jpg");
+
+        if(!image.exists()){
+            try {
+                image.createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        //return image;
+
+        // Create an File Uri
+        return Uri.fromFile(image);
     }
 
     public void openChecklistView (String name) {
@@ -298,10 +327,6 @@ public class PartInfo extends Activity {
             switch (item.getItemId()) {
 
 // MENU NEEDS GYRO SCROLLING
-//                case R.id.menu_addvideo:
-//                    csvCardsView.setSelection(0);
-//
-//                    break;
 //                case R.id.menu_addphoto:
 //                    csvCardsView.setSelection(1);
 //
@@ -315,22 +340,22 @@ public class PartInfo extends Activity {
 
                     break;
                 case R.id.menu_checklist:
-                    csvCardsView.setSelection(4);
-
-                    // Must start Checklists class automatically, since no way
-                    // to "select" a card using voice.
-
+                    if (checklistNames.size() > 0) {
+                        csvCardsView.setSelection(4);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No Checklists for Part", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.menu_photo:
-                    csvCardsView.setSelection(5);
-
-                    break;
-                case R.id.menu_video:
-                    csvCardsView.setSelection(6);
+                    if (drawables.size() > 0) {
+                        csvCardsView.setSelection(4 + checklistNames.size());
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No Photos for Part", Toast.LENGTH_SHORT).show();
+                    }
 
                     break;
                 case R.id.menu_history:
-                    csvCardsView.setSelection(7);
+                    csvCardsView.setSelection(4 + checklistNames.size() + drawables.size());
 
                     break;
                 case R.id.menu_back:

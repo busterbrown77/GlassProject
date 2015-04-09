@@ -75,16 +75,16 @@ public class RecentParts extends Activity {
             View view;
             if(pics.get(i) != null) {
                 view = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                        .setText(partList.get(i).getPartID())
-                        .setFootnote("Recently Scanned")
+                        .setText(partList.get(i).getPartName())
+                        .setFootnote(partList.get(i).getPartID())
                         .setTimestamp("Today")
                         .addImage(pics.get(i))
                         .getView();
             }else{
                 view = new CardBuilder(this, CardBuilder.Layout.CAPTION)
-                        .setText(partList.get(i).getPartID())
-                        .setFootnote("Recently Scanned")
-                        .setTimestamp("Today")
+                        .setText(partList.get(i).getPartName())
+                        .setFootnote(partList.get(i).getPartID())
+                        .setTimestamp("Recently Scanned")
                         .addImage(R.drawable.wrench)
                         .getView();
             }

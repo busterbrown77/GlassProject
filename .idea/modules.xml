@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JPLgoogleGlass.iml" filepath="$PROJECT_DIR$/JPLgoogleGlass.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/glassproject.iml" filepath="$PROJECT_DIR$/glassproject.iml" />
     </modules>
   </component>
 </project>

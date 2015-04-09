@@ -19,9 +19,6 @@
         android:id="@+id/menu_detail"
         android:title="@string/detail" />
     <item
-        android:id="@+id/menu_video"
-        android:title="@string/video" />
-    <item
         android:id="@+id/menu_photo"
         android:title="@string/photo" />
     <item
