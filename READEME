@@ -1,0 +1,4 @@
+This is a Android application for Google Glass that is meant to be a tool for engineers who need info on a specific part.
+
+The application scans QR codes on parts, and the application queries a database for information on that part, 
+including photos, diagrams, torque specs, and assembly or disassembly videos etc.
